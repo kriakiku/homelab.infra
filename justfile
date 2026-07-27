@@ -9,7 +9,7 @@ talos schematic-id:
     @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 
 apply-node node ip:
-    talosctl apply-config \
+    talosctl apply-config --insecure \
         -n {{ip}} \
         -f <(cat talos/machineconfig.yaml talos/nodes/{{node}}.yaml)
 

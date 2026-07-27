@@ -8,10 +8,19 @@ talos schematic-id:
     @echo ""
     @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 
+generate-configs:
+    talosctl gen secrets -o talos/secrets.yaml
+    talosctl gen config homelab https://k8s.1337.pet \
+        --with-secrets talos/secrets.yaml \
+        --config-patch @talos/patch.yaml \
+        --output talos/generated/
+    mv talos/generated/controlplane.yaml talos/generated/k8s-0.yaml
+    mv talos/generated/worker.yaml talos/generated/k8s-1.yaml
+
 apply-node node ip:
-    yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' talos/machineconfig.yaml talos/nodes/{{node}}-machine.yaml > /tmp/talos-{{node}}.yaml
-    { cat /tmp/talos-{{node}}.yaml; echo '---'; cat talos/watchdog.yaml; echo '---'; cat talos/nodes/{{node}}-hostname.yaml; echo '---'; cat talos/secrets.yaml; } > /tmp/talos-{{node}}-full.yaml
-    talosctl apply-config --insecure -n {{ip}} -f /tmp/talos-{{node}}-full.yaml
+    talosctl apply-config --insecure -n {{ip}} -f talos/generated/{{node}}.yaml
+    talosctl apply-config --insecure -n {{ip}} -f talos/watchdog.yaml
+    talosctl apply-config --insecure -n {{ip}} -f talos/nodes/{{node}}-hostname.yaml
 
 # Bootstrap
 bootstrap cluster:

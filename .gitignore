@@ -12,3 +12,4 @@ Thumbs.db
 kubeconfig
 talosconfig
 talos/secrets.yaml
+talos/generated/

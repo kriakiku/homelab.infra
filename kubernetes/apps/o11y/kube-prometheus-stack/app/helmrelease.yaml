@@ -70,7 +70,7 @@ spec:
               storageClassName: local-path
               resources:
                 requests:
-                  storage: 50Gi
+                   storage: 65Gi
     prometheus-node-exporter:
       fullnameOverride: node-exporter
     kube-state-metrics:

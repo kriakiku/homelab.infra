@@ -9,7 +9,8 @@ talos schematic-id:
     @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 
 apply-node node ip:
-    yq eval-all 'explode(.)' talos/machineconfig.yaml talos/nodes/{{node}}.yaml | talosctl apply-config --insecure -n {{ip}} -f -
+    yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' talos/machineconfig.yaml talos/nodes/{{node}}-machine.yaml > /tmp/talos-{{node}}.yaml
+    talosctl apply-config --insecure -n {{ip}} -f <(cat /tmp/talos-{{node}}.yaml talos/watchdog.yaml talos/nodes/{{node}}-hostname.yaml)
 
 # Bootstrap
 bootstrap cluster:

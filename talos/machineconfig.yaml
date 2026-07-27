@@ -170,8 +170,3 @@ cluster:
   secretboxEncryptionSecret: "" # !! Generate: talosctl gen secrets
   serviceAccount:
     key: "" # !! Generate: talosctl gen secrets
----
-apiVersion: v1alpha1
-kind: WatchdogTimerConfig
-device: /dev/watchdog0
-timeout: 5m

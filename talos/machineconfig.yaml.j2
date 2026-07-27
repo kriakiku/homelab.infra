@@ -4,7 +4,9 @@ machine:
   type: {{ machine.type }}
   ca:
     crt: {{ certs.os.crt }}
+{% if machine.type == "controlplane" %}
     key: {{ certs.os.key }}
+{% endif %}
   features:
     apidCheckExtKeyUsage: true
     diskQuotaSupport: true
@@ -15,6 +17,7 @@ machine:
     kubePrism:
       enabled: true
       port: 7445
+{% if machine.type == "controlplane" %}
     kubernetesTalosAPIAccess:
       enabled: true
       allowedKubernetesNamespaces:
@@ -22,6 +25,7 @@ machine:
         - system-upgrade
       allowedRoles:
         - os:admin
+{% endif %}
     rbac: true
   files:
     - op: create
@@ -93,7 +97,9 @@ machine:
 cluster:
   ca:
     crt: {{ certs.k8s.crt }}
+{% if machine.type == "controlplane" %}
     key: {{ certs.k8s.key }}
+{% endif %}
   clusterName: main
   controlPlane:
     endpoint: https://k8s.1337.pet:6443
@@ -115,6 +121,7 @@ cluster:
       - 10.10.99.0/24
     serviceSubnets:
       - 10.43.0.0/16
+{% if machine.type == "controlplane" %}
   aggregatorCA:
     crt: {{ certs.k8saggregator.crt }}
     key: {{ certs.k8saggregator.key }}
@@ -174,3 +181,4 @@ cluster:
   secretboxEncryptionSecret: {{ secrets.secretboxencryptionsecret }}
   serviceAccount:
     key: {{ certs.k8sserviceaccount.key }}
+{% endif %}

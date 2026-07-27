@@ -1,15 +1,13 @@
 ---
 version: v1alpha1
 machine:
-  ca:
-    crt: "" # !! Generate: talosctl gen secrets
-    key: "" # !! Generate: talosctl gen secrets
+  type: worker
   features:
     apidCheckExtKeyUsage: true
     diskQuotaSupport: true
     hostDNS:
       enabled: true
-      forwardKubeDNSToHost: true # Requires Cilium socketLB features
+      forwardKubeDNSToHost: true
       resolveMemberNames: true
     kubePrism:
       enabled: true
@@ -85,11 +83,7 @@ machine:
     sunrpc.tcp_slot_table_entries: "128"
     user.max_user_namespaces: "11255"
     vm.nr_hugepages: "1024"
-  token: "" # !! Generate: talosctl gen secrets
 cluster:
-  ca:
-    crt: "" # !! Generate: talosctl gen secrets
-    key: "" # !! Generate: talosctl gen secrets
   clusterName: main
   controlPlane:
     endpoint: https://k8s.1337.pet:6443
@@ -100,7 +94,6 @@ cluster:
         disabled: true
       service:
         disabled: false
-  id: "" # !! Generate: talosctl gen secrets
   network:
     cni:
       name: none
@@ -109,11 +102,6 @@ cluster:
       - 10.10.99.0/24
     serviceSubnets:
       - 10.43.0.0/16
-  secret: "" # !! Generate: talosctl gen secrets
-  token: "" # !! Generate: talosctl gen secrets
-  aggregatorCA:
-    crt: "" # !! Generate: talosctl gen secrets
-    key: "" # !! Generate: talosctl gen secrets
   allowSchedulingOnControlPlanes: false
   apiServer:
     auditPolicy:
@@ -138,9 +126,6 @@ cluster:
   etcd:
     advertisedSubnets:
       - 10.10.99.0/24
-    ca:
- 
-      key: "" # !! Generate: talosctl gen secrets
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   proxy:
@@ -167,6 +152,3 @@ cluster:
     extraArgs:
       bind-address: 0.0.0.0
     image: registry.k8s.io/kube-scheduler:v1.36.3
-  secretboxEncryptionSecret: "" # !! Generate: talosctl gen secrets
-  serviceAccount:
-    key: "" # !! Generate: talosctl gen secrets

@@ -2,11 +2,11 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 # Talos
 talos schematic-id:
-    @echo "Go to https://factory.talos.dev and configure extensions:"
-    @cat talos/schematic.yaml.j2
+    @echo "Schematic: 68b868b0866549765b2931e7694ca760b8a4bc0200dde6d35c8952dfd7bf02cb"
     @echo ""
-    @echo "Copy the Schematic ID from URL, then download ISO:"
-    @echo "  https://factory.talos.dev/image/<SCHEMATIC_ID>/v1.14.0/metal-amd64.iso"
+    @echo "ISO: https://factory.talos.dev/image/68b868b0866549765b2931e7694ca760b8a4bc0200dde6d35c8952dfd7bf02cb/v1.13.7/metal-amd64.iso"
+    @echo ""
+    @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 
 apply-node node:
     talosctl apply-config \

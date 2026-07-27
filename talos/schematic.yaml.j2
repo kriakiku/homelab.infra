@@ -3,12 +3,8 @@ customization:
   extraKernelArgs:
     - amd_iommu=on # PCI Passthrough
     - iommu=pt # PCI Passthrough
-    - module_blacklist=igc # Thunderbolt NICs (disable igc)
-    - thunderbolt.host_reset=0 # Thunderbolt NICs
   systemExtensions:
     officialExtensions:
       - siderolabs/amd-ucode # AMD CPU microcode
       - siderolabs/amdgpu # AMD iGPU (Radeon Vega)
-      - siderolabs/drbd # Miroir DRBD9 Replication
-      - siderolabs/kata-containers # Home Operations Org Runners
-      - siderolabs/thunderbolt # Thunderbolt NICs
+      - siderolabs/kata-containers # ARC runners

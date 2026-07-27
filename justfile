@@ -7,17 +7,29 @@ talos schematic-id:
 
 generate-secrets:
     talosctl gen secrets -o talos/secrets.yaml
+
+generate-configs:
+    mkdir -p talos/generated
     talosctl gen config homelab https://k8s.1337.pet:6443 \
         --with-secrets talos/secrets.yaml \
-        --output talos/generated/
+        --config-patch @talos/machineconfig.yaml \
+        --config-patch @talos/nodes/k8s-0-machine.yaml \
+        --output talos/generated/k8s-0
+    mv talos/generated/k8s-0/controlplane.yaml talos/generated/k8s-0/full.yaml
+    rm -rf talos/generated/k8s-0/worker.yaml talos/generated/k8s-0/kubeconfig
+    talosctl gen config homelab https://k8s.1337.pet:6443 \
+        --with-secrets talos/secrets.yaml \
+        --config-patch @talos/machineconfig.yaml \
+        --config-patch @talos/nodes/k8s-1-machine.yaml \
+        --output talos/generated/k8s-1
+    mv talos/generated/k8s-1/worker.yaml talos/generated/k8s-1/full.yaml
+    rm -rf talos/generated/k8s-1/controlplane.yaml talos/generated/k8s-1/kubeconfig
     mkdir -p ~/.talos
-    cp talos/generated/talosconfig ~/.talos/config
+    cp talos/generated/k8s-0/talosconfig ~/.talos/config
 
 apply-node node ip:
-    talosctl apply-config --insecure -n {{ip}} \
-        -f talos/machineconfig.yaml \
-        -f talos/nodes/{{node}}-machine.yaml \
-        -f talos/secrets.yaml \
+    talosctl apply-config --insecure --mode=reboot -n {{ip}} -e {{ip}} \
+        -f talos/generated/{{node}}/full.yaml \
         -f talos/watchdog.yaml \
         -f talos/nodes/{{node}}-hostname.yaml
 

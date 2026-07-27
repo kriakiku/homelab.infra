@@ -41,9 +41,9 @@ machine:
         wsize=1048576
   install:
     diskSelector:
-      size: "> 20GB"
+      size: ">= 10GB"
     image: factory.talos.dev/metal-installer/a79a889f330123eda622fc93eaccb82f13f2c9b688df34422c82310a67cc5bd7:v1.13.7
-    wipe: false
+    wipe: true
   kernel:
     modules:
       - name: dm_thin_pool

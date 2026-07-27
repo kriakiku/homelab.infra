@@ -1,7 +1,10 @@
 ---
 version: v1alpha1
 machine:
-  type: worker
+  type: {{ machine.type }}
+  ca:
+    crt: {{ certs.os.crt }}
+    key: {{ certs.os.key }}
   features:
     apidCheckExtKeyUsage: true
     diskQuotaSupport: true
@@ -61,6 +64,10 @@ machine:
         - 10.10.4.0/24
   nodeLabels:
     topology.kubernetes.io/region: main
+    topology.kubernetes.io/zone: m
+{% if machine.type == "worker" %}
+    node.kubernetes.io/gpu: "true"
+{% endif %}
   sysctls:
     fs.inotify.max_user_instances: "8192"
     fs.inotify.max_user_watches: "1048576"
@@ -83,7 +90,11 @@ machine:
     sunrpc.tcp_slot_table_entries: "128"
     user.max_user_namespaces: "11255"
     vm.nr_hugepages: "1024"
+  token: {{ trustdinfo.token }}
 cluster:
+  ca:
+    crt: {{ certs.k8s.crt }}
+    key: {{ certs.k8s.key }}
   clusterName: main
   controlPlane:
     endpoint: https://k8s.1337.pet:6443
@@ -94,6 +105,9 @@ cluster:
         disabled: true
       service:
         disabled: false
+  id: {{ cluster.id }}
+  secret: {{ cluster.secret }}
+  token: {{ secrets.bootstraptoken }}
   network:
     cni:
       name: none
@@ -102,6 +116,9 @@ cluster:
       - 10.10.99.0/24
     serviceSubnets:
       - 10.43.0.0/16
+  aggregatorCA:
+    crt: {{ certs.k8saggregator.crt }}
+    key: {{ certs.k8saggregator.key }}
   allowSchedulingOnControlPlanes: false
   apiServer:
     auditPolicy:
@@ -126,6 +143,9 @@ cluster:
   etcd:
     advertisedSubnets:
       - 10.10.99.0/24
+    ca:
+      crt: {{ certs.etcd.crt }}
+      key: {{ certs.etcd.key }}
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
   proxy:
@@ -152,3 +172,6 @@ cluster:
     extraArgs:
       bind-address: 0.0.0.0
     image: registry.k8s.io/kube-scheduler:v1.36.3
+  secretboxEncryptionSecret: {{ secrets.secretboxencryptionsecret }}
+  serviceAccount:
+    key: {{ certs.k8sserviceaccount.key }}

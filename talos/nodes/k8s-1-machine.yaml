@@ -1,5 +1,0 @@
-machine:
-  type: worker
-  nodeLabels:
-    node.kubernetes.io/gpu: "true"
-    topology.kubernetes.io/zone: m

@@ -1,4 +1,0 @@
-machine:
-  type: controlplane
-  nodeLabels:
-    topology.kubernetes.io/zone: m

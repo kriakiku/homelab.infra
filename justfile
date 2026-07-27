@@ -7,6 +7,11 @@ talos schematic-id:
 
 generate-secrets:
     talosctl gen secrets -o talos/secrets.yaml
+    talosctl gen config homelab https://k8s.1337.pet:6443 \
+        --with-secrets talos/secrets.yaml \
+        --output talos/generated/
+    mkdir -p ~/.talos
+    cp talos/generated/talosconfig ~/.talos/config
 
 apply-node node ip:
     talosctl apply-config --insecure -n {{ip}} \

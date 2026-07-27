@@ -1,0 +1,34 @@
+---
+alerting:
+  gotify:
+    url: https://gotify.1337.pet
+    token: ${GOTIFY_GATUS_TOKEN}
+    default-alert:
+      description: health-check failed
+      failure-threshold: 3
+      minimum-reminder-interval: 1h
+      send-on-resolved: true
+      success-threshold: 2
+    title: Gatus
+
+endpoints:
+  - name: Status Page
+    group: buddy
+    url: https://status.1337.pet
+    interval: 1m
+    ui:
+      hide-url: true
+      hide-hostname: true
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: gotify
+
+external-endpoints:
+  - name: Heartbeat
+    group: buddy
+    token: ${BUDDY_HEARTBEAT_TOKEN}
+    heartbeat:
+      interval: 5m
+    alerts:
+      - type: gotify

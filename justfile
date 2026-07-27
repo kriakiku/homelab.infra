@@ -8,9 +8,9 @@ talos schematic-id:
     @echo ""
     @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 
-apply-node node:
+apply-node node ip:
     talosctl apply-config \
-        -n {{node}} \
+        -n {{ip}} \
         -f <(cat talos/machineconfig.yaml talos/nodes/{{node}}.yaml)
 
 # Bootstrap

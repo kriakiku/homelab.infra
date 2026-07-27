@@ -10,7 +10,7 @@ talos schematic-id:
 
 apply-node node ip:
     yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' talos/machineconfig.yaml talos/nodes/{{node}}-machine.yaml > /tmp/talos-{{node}}.yaml
-    talosctl apply-config --insecure -n {{ip}} -f <(cat /tmp/talos-{{node}}.yaml talos/watchdog.yaml talos/nodes/{{node}}-hostname.yaml)
+    talosctl apply-config --insecure -n {{ip}} -f <(cat /tmp/talos-{{node}}.yaml talos/watchdog.yaml talos/nodes/{{node}}-hostname.yaml talos/secrets.yaml)
 
 # Bootstrap
 bootstrap cluster:

@@ -139,7 +139,7 @@ cluster:
     advertisedSubnets:
       - 10.10.99.0/24
     ca:
-      crt: "" # !! Generate: talosctl gen secrets
+ 
       key: "" # !! Generate: talosctl gen secrets
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381

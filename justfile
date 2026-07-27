@@ -11,7 +11,7 @@ talos schematic-id:
 apply-node node:
     talosctl apply-config \
         -n {{node}} \
-        -f <(minijinja-cli talos/machineconfig.yaml.j2 talos/nodes/{{node}}.yaml.j2)
+        -f <(cat talos/machineconfig.yaml talos/nodes/{{node}}.yaml)
 
 # Bootstrap
 bootstrap cluster:

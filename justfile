@@ -9,8 +9,8 @@ generate-secrets:
     talosctl gen secrets -o talos/secrets.yaml
 
 apply-node node ip:
-    minijinja-cli talos/machineconfig.yaml.j2 talos/secrets.yaml talos/nodes/{{node}}.yaml.j2 \
-        | talosctl apply-config --insecure --mode=reboot -n {{ip}} -e {{ip}} -f -
+    minijinja-cli talos/machineconfig.yaml.j2 talos/secrets.yaml talos/nodes/{{node}}.yaml > /tmp/talos-{{node}}.yaml
+    talosctl apply-config --insecure --mode=reboot -n {{ip}} -e {{ip}} -f /tmp/talos-{{node}}.yaml
     talosctl apply-config --insecure -n {{ip}} -e {{ip}} -f talos/watchdog.yaml
     talosctl apply-config --insecure -n {{ip}} -e {{ip}} -f talos/nodes/{{node}}-hostname.yaml
 

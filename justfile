@@ -2,7 +2,11 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 # Talos
 talos schematic-id:
-    talosctl image schematic --config talos/schematic.yaml.j2
+    @echo "Go to https://factory.talos.dev and configure extensions:"
+    @cat talos/schematic.yaml.j2
+    @echo ""
+    @echo "Copy the Schematic ID from URL, then download ISO:"
+    @echo "  https://factory.talos.dev/image/<SCHEMATIC_ID>/v1.14.0/metal-amd64.iso"
 
 apply-node node:
     talosctl apply-config \

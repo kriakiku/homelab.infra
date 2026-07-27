@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: seaweedfs
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: seaweedfs
+  interval: 1h
+  values:
+    controllers:
+      seaweedfs:
+        containers:
+          app:
+            image:
+              repository: chrislusf/seaweedfs
+              tag: 3.85
+            args:
+              - server
+              - -s3
+              - -dir=/data
+              - -s3.accessKey=cnpg
+              - -s3.secretKey=${SEAWEEDFS_S3_SECRET_KEY}
+            envFrom:
+              - secretRef:
+                  name: seaweedfs-s3-secret
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 9333
+              readiness:
+                enabled: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 9333
+              startup:
+                enabled: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: 9333
+                  failureThreshold: 30
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: [ALL] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      s3:
+        ports:
+          http:
+            port: 8333
+    persistence:
+      data:
+        type: nfs
+        server: nfs.1337.pet
+        path: /export/hdd/s3/eu-vno-1
+        mountOptions:
+          - nfsvers=4.2
+          - hard
+          - noatime
+          - rsize=1048576
+          - wsize=1048576
+          - nconnect=8

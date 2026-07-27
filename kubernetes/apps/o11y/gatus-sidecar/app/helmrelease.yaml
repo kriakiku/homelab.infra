@@ -16,6 +16,11 @@ spec:
       delayStartSeconds: "5"
       env:
         TZ: America/New_York
+        PG_CONNECTION_STRING:
+          valueFrom:
+            secretKeyRef:
+              name: main-db-gatus-secret
+              key: uri
       envFrom:
         - secretRef:
             name: "{{ .Release.Name }}-secret"
@@ -46,11 +51,6 @@ spec:
           path: config.yaml
         - key: buddy.yaml
           path: buddy.yaml
-    persistence:
-      enabled: true
-      storageClass: ceph-block
-      accessMode: ReadWriteOnce
-      size: 5Gi
     resources:
       requests:
         cpu: 100m

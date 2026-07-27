@@ -1,0 +1,63 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: restic-backup
+spec:
+  schedule: "0 3 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+       template:
+        metadata:
+          labels:
+            egress: "true"
+        spec:
+          containers:
+            - name: restic
+              image: restic/restic:0.18.0
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  mkdir -p /root/.config/rclone
+                  echo "$RCLONE_CONFIG" | base64 -d > /root/.config/rclone/rclone.conf
+                  restic -r rclone:gdrive:homelab-backups backup /data --compression max
+                  restic -r rclone:gdrive:homelab-backups forget --keep-daily 7 --keep-weekly 4 --keep-monthly 3
+                  restic -r rclone:gdrive:homelab-backups prune
+              env:
+                - name: RESTIC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: restic-backup-secret
+                      key: RESTIC_PASSWORD
+                - name: RCLONE_CONFIG
+                  valueFrom:
+                    secretKeyRef:
+                      name: restic-backup-secret
+                      key: RCLONE_CONFIG
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                capabilities:
+                  drop: [ALL]
+              resources:
+                requests:
+                  cpu: 50m
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: s3-data
+                  mountPath: /data
+          volumes:
+            - name: s3-data
+              nfs:
+                server: nfs.1337.pet
+                path: /export/hdd/s3/eu-vno-1
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000

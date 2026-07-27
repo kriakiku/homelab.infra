@@ -12,8 +12,8 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 | Ingress | Cloudflare Tunnel + Envoy Gateway |
 | Certificates | cert-manager (Let's Encrypt DNS-01 via Cloudflare) |
 | Secrets | External Secrets Operator + Vaultwarden (Bitwarden Secrets Manager) |
-| Storage | local-path-provisioner + hostPath |
-| Backups | Kopiur → Google Drive |
+| Storage | local-path-provisioner (NVMe) + direct NFS mounts (HDD) |
+| Backups | Kopiur → expanse S3 | Restic → Google Drive |
 | Monitoring | kube-prometheus-stack + Grafana + Gatus |
 | Notifications | Gotify |
 | DNS | Cloudflare (public) + UniFi (private) |
@@ -96,14 +96,71 @@ Secrets live in Vaultwarden (Bitwarden Secrets Manager), organized by project:
 | `monitoring/buddy` | Heartbeat token for status page |
 | `monitoring/gotify` | Gotify notification tokens |
 | `monitoring/grafana` | Grafana admin password |
-| `apps/qui` | Session secret |
+| `apps/qui` | Session secret + OIDC client secret |
 | `apps/smtp-relay` | SMTP relay credentials |
 | `apps/backups` | Kopiur password + Google Drive OAuth |
+| `apps/pocket-id` | Encryption key |
+| `shared/maxmind` | MaxMind GeoLite2 license key |
+| `shared/nordvpn` | NordVPN WireGuard private key |
 | `github/flux` | Flux webhook token + GitHub PAT |
 | `github/app` | GitHub App credentials for ARC runners |
 | `github/konflate` | Konflate webhook secret |
+| `databases/seaweedfs` | S3 secret key |
+| `backups/restic` | Restic password + rclone config |
 
 ESO's `vaultwarden` ClusterSecretStore syncs them into Kubernetes Secrets via `dataFrom.find`.
+
+## Network architecture
+
+| VLAN | Subnet | Purpose |
+|---|---|---|
+| VLAN 3 | `10.10.3.0/24` | IoT |
+| VLAN 4 | `10.10.4.0/24` | Infrastructure — nodes, BGP, LB IP pool (10.10.4.224/27) |
+| VLAN 5 | `10.10.5.0/24` | Storage — NFS, isolated by CiliumNetworkPolicy |
+| VLAN 6 | `10.10.6.0/24` | Egress — internet access, client isolation |
+| VLAN 7 | `10.10.7.0/24` | VPN |
+| — | `10.10.99.0/24` | Pod CIDR (internal to Cilium) |
+| — | `10.43.0.0/16` | Service CIDR (internal) |
+
+### Node networking
+
+| Node | NICs |
+|---|---|
+| `k8s-0` (controlplane) | VLAN 4 only |
+| `k8s-1` (worker) | VLAN 4 + VLAN 5 + VLAN 6 |
+| `media` (LXC) | VLAN 5 only (NFS server) |
+
+### Egress isolation
+
+CiliumNetworkPolicy restricts pod internet access:
+- Pods with `egress: "true"` label → internet via VLAN 6
+- All other pods → internal subnets only (VLAN 4, cluster CIDRs)
+- Pods with `nfs-access: "true"` label → can reach `10.10.5.0/24:2049`
+- All other pods → blocked from storage VLAN
+
+```
+Controlplane VM              Worker VM                     NFS LXC
+┌──────────────┐         ┌───────────────────┐         ┌──────────┐
+│              │         │                   │         │          │
+│  k8s-0       │  VLAN4  │  k8s-1            │  VLAN5  │  media   │
+│  CP only     │─────────│  Cilium + pods    │─────────│  NFS     │
+│              │         │                   │         │          │
+│  eth4 ───────┼──10.10.4.10  eth4 ─────────┼────10.10.5.20      │
+│              │         │  eth5 ────────────┼─10.10.5.11         │
+│              │         │  eth6 ── internet │         │          │
+│              │         │                   │         │          │
+└──────────────┘         └───────────────────┘         └──────────┘
+```
+
+## Storage
+
+| Type | Location | Use |
+|---|---|---|
+| `local-path` (default) | NVMe on worker | Databases, configs, PVC defaults |
+| Direct NFS mount | `nfs.1337.pet:/export/hdd/media` | Media (qbittorrent, qui) |
+| Direct NFS mount | `nfs.1337.pet:/export/hdd/s3/eu-vno-1` | SeaweedFS S3 gateway |
+
+
 
 ## Directory structure
 

@@ -1,7 +1,8 @@
 ---
 machine:
-  type: controlplane
+  type: worker
   nodeLabels:
+    node.kubernetes.io/gpu: "true"
     topology.kubernetes.io/zone: m
 ---
 apiVersion: v1alpha1

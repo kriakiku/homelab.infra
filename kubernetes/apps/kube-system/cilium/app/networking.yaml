@@ -7,7 +7,7 @@ metadata:
 spec:
   allowFirstLastIPs: "No"
   blocks:
-    - cidr: 192.168.69.0/24
+    - cidr: 10.10.4.224/27
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumbgpadvertisement_v2.json
 apiVersion: cilium.io/v2
@@ -54,7 +54,7 @@ spec:
       peers:
         - name: unifi
           peerASN: 64513
-          peerAddress: 192.168.1.1
+          peerAddress: 10.10.4.1
           peerConfigRef:
             name: l3-bgp-peer-config
 ---
@@ -64,7 +64,7 @@ metadata:
   name: kube-api
   annotations:
     external-dns.alpha.kubernetes.io/hostname: k8s.1337.pet
-    lbipam.cilium.io/ips: 192.168.69.120
+    lbipam.cilium.io/ips: 10.10.4.225
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local

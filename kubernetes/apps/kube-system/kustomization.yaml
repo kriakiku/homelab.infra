@@ -16,7 +16,6 @@ resources:
   - ./kata-containers/ks.yaml
   - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
-  - ./multus/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./reloader/ks.yaml
   - ./spegel/ks.yaml

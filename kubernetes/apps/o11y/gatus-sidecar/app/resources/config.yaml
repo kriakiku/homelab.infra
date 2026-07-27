@@ -29,9 +29,9 @@ endpoints:
 metrics: true
 
 storage:
-  type: sqlite
+  type: postgres
   caching: true
-  path: ${GATUS_CONFIG_PATH}/gatus.db
+  connectionString: ${PG_CONNECTION_STRING}
 
 ui:
   title: Status | Gatus

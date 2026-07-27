@@ -7,6 +7,7 @@ namespace: default
 components:
   - ../../components/alerts
   - ../../components/kopiur/secret
+  - ../../components/nfs-media
 
 resources:
   - ./namespace.yaml
@@ -14,4 +15,5 @@ resources:
   - ./brrpolice/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml
+  - ./pocket-id/ks.yaml
   - ./smtp-relay/ks.yaml

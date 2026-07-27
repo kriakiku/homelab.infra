@@ -9,10 +9,55 @@ spec:
     kind: OCIRepository
     name: qbittorrent
   interval: 1h
+  valuesFrom:
+    - kind: ConfigMap
+      name: nfs-media-values
   values:
     controllers:
       qbittorrent:
+        pod:
+          labels:
+            egress: "true"
         containers:
+          gluetun:
+            image:
+              repository: qmcgaw/gluetun
+              tag: v3.41
+            env:
+              VPN_SERVICE_PROVIDER: nordvpn
+              VPN_TYPE: wireguard
+          FIREWALL: on
+          SERVER_COUNTRIES: Poland
+          FIREWALL_OUTBOUND_SUBNETS: 10.0.0.0/8
+            envFrom:
+              - secretRef:
+                  name: qbittorrent-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                add: [NET_ADMIN]
+              readOnlyRootFilesystem: false
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [/gluetun-entrypoint, healthcheck]
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [/gluetun-entrypoint, healthcheck]
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [/gluetun-entrypoint, healthcheck]
+                  failureThreshold: 30
+                  periodSeconds: 10
           app:
             image:
               repository: ghcr.io/home-operations/qbittorrent-libtorrentv1
@@ -67,34 +112,8 @@ spec:
         ports:
           http:
             port: *port
-      bittorrent:
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 192.168.69.123
-        externalTrafficPolicy: Local
-        ports:
-          bittorrent-tcp:
-            port: *torrentPort
-            protocol: TCP
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.1337.pet"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: *port
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      media:
-        type: nfs
-        server: expanse.internal
-        path: /mnt/eros/Media
-        globalMounts:
-          - path: /media
       tmp:
         type: emptyDir

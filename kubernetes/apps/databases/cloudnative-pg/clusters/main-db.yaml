@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: main-db
+spec:
+  instances: 1
+
+  bootstrap:
+    initdb:
+      database: main
+      owner: main
+      secret:
+        name: main-db-owner-secret
+
+  storage:
+    size: 10Gi
+    storageClass: local-path
+
+  managed:
+    roles:
+      - name: pocketid
+        ensure: present
+        login: true
+        passwordSecret:
+          name: main-db-pocketid-secret
+      - name: gatus
+        ensure: present
+        login: true
+        passwordSecret:
+          name: main-db-gatus-secret
+    databases:
+      - name: pocketid
+        owner: pocketid
+      - name: gatus
+        owner: gatus
+
+  monitoring:
+    enablePodMonitor: true
+
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://cnpg-backups/
+      endpointURL: http://seaweedfs.databases.svc.cluster.local:8333
+      s3Credentials:
+        accessKeyId:
+          name: seaweedfs-s3-secret
+          key: SEAWEEDFS_S3_ACCESS_KEY
+        secretAccessKey:
+          name: seaweedfs-s3-secret
+          key: SEAWEEDFS_S3_SECRET_KEY
+      wal:
+        compression: gzip
+        encryption: AES256
+      data:
+        compression: gzip
+        encryption: AES256
+        immediateCheckpoint: true
+    retentionPolicy: "30d"

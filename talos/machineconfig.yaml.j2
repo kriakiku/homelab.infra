@@ -47,18 +47,13 @@ machine:
         wsize=1048576
   install:
     diskSelector:
-      model: MK000480GWCEV
+      size: > 20GB
     image: factory.talos.dev/metal-installer/{{ ENV.SCHEMATIC }}:v1.14.0-beta.0
     wipe: false
   kernel:
     modules:
       - name: dm_thin_pool
-      - name: drbd
-        parameters:
-          - usermode_helper=disabled
-      - name: drbd_transport_tcp
       - name: nbd
-      - name: thunderbolt
   kubelet:
     defaultRuntimeSeccompProfileEnabled: true
     disableManifestsDirectory: true
@@ -69,9 +64,8 @@ machine:
     image: ghcr.io/siderolabs/kubelet:v1.36.3
     nodeIP:
       validSubnets:
-        - 192.168.42.0/24
+        - 10.10.4.0/24
   nodeLabels:
-    node.kubernetes.io/gpu: "true"
     topology.kubernetes.io/region: main
   sysctls:
     fs.inotify.max_user_instances: "8192"
@@ -104,7 +98,7 @@ cluster:
     {% endif %}
   clusterName: main
   controlPlane:
-    endpoint: https://k8s.internal:6443
+    endpoint: https://k8s.1337.pet:6443
   discovery:
     enabled: true
     registries:
@@ -118,7 +112,7 @@ cluster:
       name: none
     dnsDomain: cluster.local
     podSubnets:
-      - 10.42.0.0/16
+      - 10.10.99.0/24
     serviceSubnets:
       - 10.43.0.0/16
   secret: "" # !! Generate: talosctl gen secrets
@@ -127,7 +121,7 @@ cluster:
   aggregatorCA:
     crt: "" # !! Generate: talosctl gen secrets
     key: "" # !! Generate: talosctl gen secrets
-  allowSchedulingOnControlPlanes: true
+  allowSchedulingOnControlPlanes: false
   apiServer:
     auditPolicy:
       apiVersion: audit.k8s.io/v1
@@ -135,7 +129,7 @@ cluster:
       rules:
         - level: Metadata
     certSANs:
-      - k8s.internal
+      - k8s.1337.pet
     disablePodSecurityPolicy: true
     extraArgs:
       enable-aggregator-routing: "true"
@@ -150,7 +144,7 @@ cluster:
     disabled: true
   etcd:
     advertisedSubnets:
-      - 192.168.42.0/24
+      - 10.10.99.0/24
     ca:
       crt: "" # !! Generate: talosctl gen secrets
       key: "" # !! Generate: talosctl gen secrets

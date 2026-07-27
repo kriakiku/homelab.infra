@@ -56,7 +56,7 @@ spec:
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
-                claimName: grafana-pvc
+                claimName: grafana-nvme
   httpRoute:
     spec:
       hostnames:
@@ -64,12 +64,4 @@ spec:
       parentRefs:
         - name: envoy-internal
           namespace: network
-  persistentVolumeClaim:
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-      storageClassName: ceph-block
   disableDefaultSecurityContext: All

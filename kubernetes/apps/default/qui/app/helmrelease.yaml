@@ -9,6 +9,9 @@ spec:
     kind: OCIRepository
     name: qui
   interval: 1h
+  valuesFrom:
+    - kind: ConfigMap
+      name: nfs-media-values
   values:
     controllers:
       qui:
@@ -20,14 +23,16 @@ spec:
               repository: ghcr.io/autobrr/qui
               tag: v1.23.0@sha256:b1abd18f1d544cd5c63a3b8d9c8a91d097143e04df416567a8cb52040f380ca8
             env:
-              QUI__AUTH_DISABLED: true
-              QUI__I_ACKNOWLEDGE_THIS_IS_A_BAD_IDEA: true
-              QUI__AUTH_DISABLED_ALLOWED_CIDRS: 0.0.0.0/0
               QUI__HOST: 0.0.0.0
               QUI__PORT: &port 80
               QUI__METRICS_ENABLED: true
               QUI__METRICS_HOST: 0.0.0.0
               QUI__METRICS_PORT: &metricsPort 8080
+              QUI__OIDC_ENABLED: true
+              QUI__OIDC_ISSUER: http://pocket-id.default.svc.cluster.local:1411
+              QUI__OIDC_CLIENT_ID: qui
+              QUI__OIDC_REDIRECT_URL: https://qui.1337.pet/oidc/callback
+              QUI__QBITTORRENT_URL: http://qbittorrent.default.svc.cluster.local:80
               TZ: America/New_York
             envFrom:
               - secretRef:
@@ -86,7 +91,7 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.1337.pet"
         parentRefs:
-          - name: envoy-internal
+          - name: envoy-external
             namespace: network
         rules:
           - backendRefs:
@@ -95,9 +100,3 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      media:
-        type: nfs
-        server: expanse.internal
-        path: /mnt/eros/Media
-        globalMounts:
-          - path: /media

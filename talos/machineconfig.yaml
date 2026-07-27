@@ -3,9 +3,7 @@ version: v1alpha1
 machine:
   ca:
     crt: "" # !! Generate: talosctl gen secrets
-    {% if ENV.CONTROLPLANE %}
     key: "" # !! Generate: talosctl gen secrets
-    {% endif %}
   features:
     apidCheckExtKeyUsage: true
     diskQuotaSupport: true
@@ -16,7 +14,6 @@ machine:
     kubePrism:
       enabled: true
       port: 7445
-    {% if ENV.CONTROLPLANE %}
     kubernetesTalosAPIAccess:
       enabled: true
       allowedKubernetesNamespaces:
@@ -24,7 +21,6 @@ machine:
         - system-upgrade
       allowedRoles:
         - os:admin
-    {% endif %}
     rbac: true
   files:
     - op: create
@@ -93,9 +89,7 @@ machine:
 cluster:
   ca:
     crt: "" # !! Generate: talosctl gen secrets
-    {% if ENV.CONTROLPLANE %}
     key: "" # !! Generate: talosctl gen secrets
-    {% endif %}
   clusterName: main
   controlPlane:
     endpoint: https://k8s.1337.pet:6443
@@ -117,7 +111,6 @@ cluster:
       - 10.43.0.0/16
   secret: "" # !! Generate: talosctl gen secrets
   token: "" # !! Generate: talosctl gen secrets
-  {% if ENV.CONTROLPLANE %}
   aggregatorCA:
     crt: "" # !! Generate: talosctl gen secrets
     key: "" # !! Generate: talosctl gen secrets
@@ -177,7 +170,6 @@ cluster:
   secretboxEncryptionSecret: "" # !! Generate: talosctl gen secrets
   serviceAccount:
     key: "" # !! Generate: talosctl gen secrets
-  {% endif %}
 ---
 apiVersion: v1alpha1
 kind: WatchdogTimerConfig

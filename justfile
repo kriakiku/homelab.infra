@@ -2,9 +2,9 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 # Talos
 talos schematic-id:
-    @echo "Schematic: 68b868b0866549765b2931e7694ca760b8a4bc0200dde6d35c8952dfd7bf02cb"
+    @echo "Schematic: a79a889f330123eda622fc93eaccb82f13f2c9b688df34422c82310a67cc5bd7"
     @echo ""
-    @echo "ISO: https://factory.talos.dev/image/68b868b0866549765b2931e7694ca760b8a4bc0200dde6d35c8952dfd7bf02cb/v1.13.7/metal-amd64.iso"
+    @echo "ISO: https://factory.talos.dev/image/a79a889f330123eda622fc93eaccb82f13f2c9b688df34422c82310a67cc5bd7/v1.13.7/metal-amd64.iso"
     @echo ""
     @echo "Extensions: amd-ucode, amdgpu, kata-containers"
 

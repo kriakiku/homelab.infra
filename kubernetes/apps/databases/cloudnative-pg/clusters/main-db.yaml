@@ -56,6 +56,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-mailarchiver-secret
+      - name: penpot
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-penpot-secret
 
   monitoring:
     enablePodMonitor: true

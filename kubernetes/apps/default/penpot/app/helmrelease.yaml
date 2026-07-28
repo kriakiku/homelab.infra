@@ -1,0 +1,116 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: penpot
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: penpot
+  interval: 1h
+  values:
+    config:
+      publicUri: https://penpot.1337.pet
+      # Flags: disable form registration (OIDC-only self-signup),
+      #        keep password login for admin fallback,
+      #        enable OIDC + auto-create OIDC users, SMTP, no email verification.
+      flags: >-
+        disable-registration
+        enable-login-with-password
+        enable-login-with-oidc
+        enable-oidc-registration
+        enable-smtp
+        disable-email-verification
+        disable-telemetry
+        disable-secure-session-cookies
+
+      # API secret key from SOPS secret
+      existingSecret: penpot-secret
+      secretKeys:
+        apiSecretKey: api-secret-key
+
+      postgresql:
+        host: main-db-rw.databases.svc.cluster.local
+        port: 5432
+        database: penpot
+        username: penpot
+        existingSecret: penpot-secret
+        secretKeys:
+          passwordKey: db-password
+
+      redis:
+        host: penpot-valkey
+        port: 6379
+        database: "0"
+
+      objectsStorage:
+        storageBackend: s3
+        s3:
+          region: us-east-1
+          bucket: penpot
+          endpointURI: http://seaweedfs.storage.svc.cluster.local:8333
+          existingSecret: penpot-secret
+          secretKeys:
+            accessKeyIDKey: s3-access-key-id
+            secretAccessKey: s3-secret-access-key
+
+      smtp:
+        enabled: true
+        host: smtp-relay.default.svc.cluster.local
+        port: 25
+        tls: false
+        ssl: false
+        defaultFrom: penpot@kriakiku.dev
+        defaultReplyTo: penpot@kriakiku.dev
+
+      providers:
+        oidc:
+          enabled: true
+          # Browser uses the public URL for the authorization redirect.
+          baseURI: https://auth.1337.pet
+          authURI: https://auth.1337.pet/authorize
+          # Backend calls internal Pocket ID for token exchange and userinfo
+          # (avoids external egress from the backend pod).
+          tokenURI: http://pocket-id.default.svc.cluster.local:1411/api/oidc/token
+          userURI: http://pocket-id.default.svc.cluster.local:1411/api/oidc/userinfo
+          scopes: openid email profile
+          # Empty string disables role checking (all authenticated OIDC users accepted).
+          roles: ""
+          existingSecret: penpot-oidc-credentials
+          secretKeys:
+            oidcClientIDKey: client_id
+            oidcClientSecretKey: client_secret
+
+    # Disable the chart's Ingress — we manage an HTTPRoute ourselves.
+    ingress:
+      enabled: false
+
+    # Allow backend to reach https://auth.1337.pet for JWKS key fetch (OIDC JWT validation).
+    backend:
+      podLabels:
+        egress: "true"
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
+
+    frontend:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+    exporter:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+
+    mcp:
+      enabled: false

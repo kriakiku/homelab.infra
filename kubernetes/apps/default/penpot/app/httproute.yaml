@@ -1,0 +1,24 @@
+---
+# HTTPRoute for Penpot frontend.
+# The penpot Helm chart does not support Gateway API, so we create the route here
+# and disable the chart's own Ingress resource.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: penpot
+  annotations:
+    item.homer.rajsingh.info/name: "Penpot"
+    item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/penpot.png"
+    item.homer.rajsingh.info/subtitle: "Open-Source Design Tool"
+    service.homer.rajsingh.info/name: "Design"
+    service.homer.rajsingh.info/icon: "fa-solid fa-pen-nib"
+spec:
+  hostnames:
+    - penpot.1337.pet
+  parentRefs:
+    - name: envoy-external
+      namespace: network
+  rules:
+    - backendRefs:
+        - name: penpot-frontend
+          port: 80

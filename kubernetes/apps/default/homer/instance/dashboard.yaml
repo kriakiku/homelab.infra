@@ -72,6 +72,13 @@ spec:
               tag: passwords
               url: "https://vaultwarden.1337.pet"
               target: _blank
+          - parameters:
+              name: Falco
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/falco.png"
+              subtitle: "Runtime Security"
+              tag: security
+              url: "https://falco.1337.pet"
+              target: _blank
 
       - parameters:
           name: Personal
@@ -105,6 +112,39 @@ spec:
               tag: email
               url: "https://mailarchiver.1337.pet"
               target: _blank
+          - parameters:
+              name: PhotoPrism
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/photoprism.png"
+              subtitle: "Photo Library"
+              tag: photos
+              url: "https://photoprism.1337.pet"
+              target: _blank
+
+      - parameters:
+          name: Design & AI
+          icon: fa-solid fa-wand-magic-sparkles
+        items:
+          - parameters:
+              name: Penpot
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/penpot.png"
+              subtitle: "Open-Source Design Tool"
+              tag: design
+              url: "https://penpot.1337.pet"
+              target: _blank
+          - parameters:
+              name: One API
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/openai.png"
+              subtitle: "LLM API Gateway"
+              tag: ai
+              url: "https://one-api.1337.pet"
+              target: _blank
+          - parameters:
+              name: Kestra
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kestra.png"
+              subtitle: "Workflow Orchestration"
+              tag: automation
+              url: "https://kestra.1337.pet"
+              target: _blank
 
       - parameters:
           name: Media & Downloads
@@ -116,13 +156,6 @@ spec:
               subtitle: "Download Manager"
               tag: downloads
               url: "https://qui.1337.pet"
-              target: _blank
-          - parameters:
-              name: qBittorrent
-              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png"
-              subtitle: "Torrent Client (VPN)"
-              tag: downloads
-              url: "http://qui.1337.pet"
               target: _blank
 
       - parameters:
@@ -171,6 +204,13 @@ spec:
           name: Infrastructure
           icon: fa-solid fa-server
         items:
+          - parameters:
+              name: Homer
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homer.png"
+              subtitle: "Service Dashboard"
+              tag: dashboard
+              url: "https://homer.1337.pet"
+              target: _blank
           - parameters:
               name: Flux
               logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/flux.png"

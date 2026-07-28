@@ -39,7 +39,8 @@ spec:
           passwordKey: db-password
 
       redis:
-        host: penpot-valkey
+        # Service name from the penpot-cache HelmRelease (app-template 5.x).
+        host: penpot-cache
         port: 6379
         database: "0"
 

@@ -80,10 +80,17 @@ spec:
                 add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE, NET_BIND_SERVICE, SYS_ADMIN]
             resources:
               requests:
-                cpu: 50m
-                memory: 128Mi
+                cpu: 25m
+                memory: 64Mi
               limits:
                 memory: 512Mi
+
+    # Prefer the worker, but allow the control-plane when k8s-1 is memory-full.
+    defaultPodOptions:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
 
     service:
       app:

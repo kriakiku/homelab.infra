@@ -18,12 +18,12 @@ spec:
         enabled: true
       dashboard:
         enabled: true
-      grafanaDashboard:
-        enabled: true
-        allowCrossNamespaceImport: true
-        instanceSelector:
-          matchLabels:
-            dashboards: grafana
+        grafanaDashboard:
+          enabled: true
+          allowCrossNamespaceImport: true
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
     # Instance / users / groups / clients are managed as CRs alongside each app.
     pocket-id-instance:
       instance:

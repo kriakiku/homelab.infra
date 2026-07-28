@@ -58,7 +58,6 @@ spec:
     service:
       app:
         controller: penpot-cache
-        nameOverride: penpot-valkey
         ports:
           redis:
             port: 6379

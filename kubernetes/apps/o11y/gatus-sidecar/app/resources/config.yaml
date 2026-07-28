@@ -42,7 +42,7 @@ ui:
     - name: Github
       link: https://github.com/kriakiku
     - name: Homelab
-      link: https://github.com/kriakiku/home-ops
+      link: https://github.com/kriakiku/homelab.infra
 
 web:
   port: ${GATUS_WEB_PORT}

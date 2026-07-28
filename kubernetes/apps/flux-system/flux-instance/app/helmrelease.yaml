@@ -22,7 +22,7 @@ spec:
         - notification-controller
       sync:
         kind: GitRepository
-        url: https://github.com/kriakiku/home-ops
+        url: https://github.com/kriakiku/homelab.infra
         ref: refs/heads/main
         path: kubernetes/flux/cluster
         interval: 1h

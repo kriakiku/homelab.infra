@@ -11,7 +11,7 @@ spec:
   interval: 1h
   values:
     config:
-      repo: github://kriakiku/home-ops
+      repo: github://kriakiku/homelab.infra
       statusChecks: true
       prComments: true
       publicUrl: https://{{ .Release.Name }}.1337.pet

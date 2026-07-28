@@ -30,7 +30,16 @@ spec:
               QUI__METRICS_PORT: &metricsPort 8080
               QUI__OIDC_ENABLED: true
               QUI__OIDC_ISSUER: http://pocket-id.default.svc.cluster.local:1411
-              QUI__OIDC_CLIENT_ID: qui
+              QUI__OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: qui-oidc-credentials
+                    key: client_id
+              QUI__OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: qui-oidc-credentials
+                    key: client_secret
               QUI__OIDC_REDIRECT_URL: https://qui.1337.pet/oidc/callback
               QUI__QBITTORRENT_URL: http://qbittorrent.media.svc.cluster.local:80
               TZ: America/New_York

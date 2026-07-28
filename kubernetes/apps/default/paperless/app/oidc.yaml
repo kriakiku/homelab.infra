@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: paperless
+spec:
+  friendlyName: Paperless
+  # Members can be added in the Pocket ID UI; the operator will not overwrite them.
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: paperless
+spec:
+  name: Paperless
+  clientID: paperless
+  pkceEnabled: true
+  skipConsent: true
+  callbackUrls:
+    - https://paperless.1337.pet/accounts/oidc/pocket-id/login/callback/
+  logo:
+    nameOverride: paperlessngx
+  allowedUserGroups:
+    - name: paperless
+  secret:
+    name: paperless-oidc-credentials
+    keys:
+      clientID: client_id
+      clientSecret: client_secret
+      issuerUrl: issuer_url
+      discoveryUrl: discovery_url

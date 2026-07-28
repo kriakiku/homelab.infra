@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: paperless
 spec:
+  dependsOn:
+    - name: pocket-id
   interval: 1h
   path: ./kubernetes/apps/default/paperless/app
   prune: true

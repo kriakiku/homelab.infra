@@ -6,4 +6,4 @@ metadata:
   name: local-path-provisioner
 spec:
   interval: 1h
-  url: https://rancher.github.io/local-path-provisioner
+  url: https://charts.rancher.io

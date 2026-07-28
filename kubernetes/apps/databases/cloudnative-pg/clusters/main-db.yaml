@@ -18,8 +18,8 @@ spec:
     size: 10Gi
     storageClass: local-path
 
-  # Shared instance backing 9 app databases (pocketid, gatus, paperless,
-  # linkwarden, vaultwarden, mailarchiver, penpot, kestra, oneapi).
+  # Shared instance backing app databases (pocketid, gatus, paperless,
+  # linkwarden, vaultwarden, mailarchiver, penpot, kestra, oneapi, photoprism).
   resources:
     requests:
       cpu: 100m
@@ -83,6 +83,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-oneapi-secret
+      - name: photoprism
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-photoprism-secret
 
   monitoring:
     enablePodMonitor: true

@@ -5,16 +5,14 @@ kind: Kustomization
 metadata:
   name: photoprism
 spec:
-  components:
-    - ../../../../components/kopiur/backup
+  # No kopiur: originals on NFS HDD are the Google/iCloud backup source of truth.
+  # Index DB lives in shared CNPG main-db (backed up via Barman → SeaweedFS).
   dependsOn:
     - name: pocket-id
+    - name: cloudnative-pg-clusters
+      namespace: databases
   interval: 1h
   path: ./kubernetes/apps/default/photoprism/app
-  postBuild:
-    substitute:
-      APP: photoprism
-      KOPIUR_CAPACITY: 50Gi
   prune: true
   sourceRef:
     kind: GitRepository

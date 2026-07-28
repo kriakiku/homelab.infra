@@ -99,8 +99,8 @@ spec:
         # ── Prometheus output (event counters by rule/priority) ──────────
         prometheus:
           enabled: true
-          # Do not duplicate built-in labels (rule/priority/source) — that panics falcosidekick.
-          extralabels: "cluster"
+          # Empty: built-in labels already include rule/priority/source; extras panic on duplicates.
+          extralabels: ""
 
         # ── Victoria Logs via Loki-compatible ingest API ─────────────────
         # VictoriaLogs supports /insert/loki/api/v1/push.
@@ -126,30 +126,7 @@ spec:
           # Seconds (int), not a Go duration string.
           expireafter: "1800"
 
-      # ── Falcosidekick WebUI ─────────────────────────────────────────────
-      # Visual event timeline, exposed on envoy-internal.
+      # WebUI disabled: redis-stack + PVC blow the 32Gi node ephemeral budget.
+      # Falco events still go to Victoria Logs + Alertmanager + Prometheus.
       webui:
-        enabled: true
-        replicaCount: 1
-        tolerations:
-          - key: node-role.kubernetes.io/control-plane
-            operator: Exists
-            effect: NoSchedule
-        resources:
-          requests:
-            cpu: 10m
-            memory: 32Mi
-          limits:
-            memory: 64Mi
-        redis:
-          storageEnabled: false
-          tolerations:
-            - key: node-role.kubernetes.io/control-plane
-              operator: Exists
-              effect: NoSchedule
-          resources:
-            requests:
-              cpu: 10m
-              memory: 32Mi
-            limits:
-              memory: 64Mi
+        enabled: false

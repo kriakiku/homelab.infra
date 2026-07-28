@@ -72,13 +72,6 @@ spec:
               tag: passwords
               url: "https://vaultwarden.1337.pet"
               target: _blank
-          - parameters:
-              name: Falco
-              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/falco.png"
-              subtitle: "Runtime Security"
-              tag: security
-              url: "https://falco.1337.pet"
-              target: _blank
 
       - parameters:
           name: Personal

@@ -26,9 +26,9 @@ spec:
             env:
               VPN_SERVICE_PROVIDER: nordvpn
               VPN_TYPE: wireguard
-          FIREWALL: on
-          SERVER_COUNTRIES: Poland
-          FIREWALL_OUTBOUND_SUBNETS: 10.0.0.0/8
+              FIREWALL: "on"
+              SERVER_COUNTRIES: Poland
+              FIREWALL_OUTBOUND_SUBNETS: 10.0.0.0/8
             envFrom:
               - secretRef:
                   name: qbittorrent-secret

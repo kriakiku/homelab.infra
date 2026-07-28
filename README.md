@@ -11,7 +11,7 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 | GitOps | Flux CD |
 | Ingress | Cloudflare Tunnel + Envoy Gateway |
 | Certificates | cert-manager (Let's Encrypt DNS-01 via Cloudflare) |
-| Secrets | External Secrets Operator + Vaultwarden (Bitwarden Secrets Manager) |
+| Secrets | SOPS + age (encrypted in Git, decrypted by Flux) |
 | Storage | local-path-provisioner (NVMe) + direct NFS mounts (HDD) |
 | Backups | Kopiur → expanse S3 | Restic → Google Drive |
 | Monitoring | kube-prometheus-stack + Grafana + Gatus |
@@ -22,8 +22,7 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 ## Prerequisites
 
 - Proxmox host with 2 VMs provisioned (1 controlplane, 1 worker)
-- Talos CLI (`talosctl`) and `just` installed locally
-- [Vaultwarden](https://github.com/dani-garcia/vaultwarden) instance with Bitwarden Secrets Manager enabled
+- Talos CLI (`talosctl`), `just`, `sops` and `age` installed locally
 - `1337.pet` domain in Cloudflare
 - GitHub App for CI runners
 
@@ -61,27 +60,21 @@ talosctl -n <controlplane-ip> bootstrap
 talosctl kubeconfig -n <controlplane-ip> -f
 ```
 
-### 4. Create Vaultwarden bootstrap secret
+### 4. Provide the SOPS age key
+
+Place the age private key at `age.key` in the repo root (git-ignored). The
+matching public key is configured in `.sops.yaml` and used to encrypt all
+`kubernetes/**/*.sops.yaml` secret manifests.
+
+To generate a fresh key (only for a brand-new setup — existing encrypted
+secrets require the original key):
 
 ```bash
-VAULTWARDEN_TOKEN=$(curl -sX POST https://vault.1337.pet/identity/connect/token \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "grant_type=client_credentials&scope=api&device_type=14&device_identifier=homelab-kubernetes&device_name=Kubernetes&client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c&client_secret=<client_secret>" \
-  | jq -r '.access_token')
-
-kubectl create ns external-secrets --dry-run=client -o yaml | kubectl apply -f -
-kubectl -n external-secrets create secret generic vaultwarden-secret \
-  --from-literal=token="$VAULTWARDEN_TOKEN" \
-  --from-literal=client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c \
-  --from-literal=client_secret=<client_secret> \
-  --from-literal=organization_id=76cb6e80-15c7-4fb8-8a11-e7489a28c045
+age-keygen -o age.key
 ```
 
-Or use the justfile command:
-
-```bash
-just vaultwarden-secret <client_secret>
-```
+The `just bootstrap` step below creates the `sops-age` Secret in the
+`flux-system` namespace from this file so Flux can decrypt manifests.
 
 ### 5. Bootstrap cluster
 
@@ -93,28 +86,28 @@ This applies bootstrap manifests, syncs helmfile, and deploys Flux. Flux then re
 
 ## Secrets
 
-Secrets live in Vaultwarden (Bitwarden Secrets Manager), organized by project:
+Secrets are stored as SOPS-encrypted Kubernetes `Secret` manifests
+(`kubernetes/**/*.sops.yaml`) committed directly to Git. Only the `data`/
+`stringData` values are encrypted with [age](https://github.com/FiloSottile/age);
+metadata and keys stay in plaintext for readability and diffs.
 
-| Project | Purpose |
-|---|---|
-| `infra/cloudflare` | Cloudflare API tokens, tunnel credentials |
-| `network/unifi` | UniFi API key |
-| `monitoring/buddy` | Heartbeat token for status page |
-| `monitoring/gotify` | Gotify notification tokens |
-| `monitoring/grafana` | Grafana admin password |
-| `apps/qui` | Session secret + OIDC client secret |
-| `apps/smtp-relay` | SMTP relay credentials |
-| `apps/backups` | Kopiur password + Google Drive OAuth |
-| `apps/pocket-id` | Encryption key |
-| `shared/maxmind` | MaxMind GeoLite2 license key |
-| `shared/nordvpn` | NordVPN WireGuard private key |
-| `github/flux` | Flux webhook token + GitHub PAT |
-| `github/app` | GitHub App credentials for ARC runners |
-| `github/konflate` | Konflate webhook secret |
-| `databases/seaweedfs` | S3 secret key |
-| `backups/restic` | Restic password + rclone config |
+- Encryption rules live in `.sops.yaml` (age recipient public key).
+- The age private key is stored at `age.key` (git-ignored) and injected into
+  the cluster as the `sops-age` Secret in `flux-system`.
+- Flux's `kustomize-controller` decrypts them at apply time
+  (`spec.decryption.provider: sops` on the root Kustomization).
 
-ESO's `vaultwarden` ClusterSecretStore syncs them into Kubernetes Secrets via `dataFrom.find`.
+Edit a secret with:
+
+```bash
+export SOPS_AGE_KEY_FILE=$PWD/age.key
+sops kubernetes/apps/<ns>/<app>/app/secret.sops.yaml
+```
+
+Secrets currently managed (by app): cloudflare (dns/tunnel/issuer), unifi-dns,
+grafana admin, gatus/alertmanager (buddy + gotify), qui, smtp-relay, pocket-id,
+qbittorrent (wireguard), flux webhook + GitHub token, GitHub App (ARC runners),
+konflate, seaweedfs S3, restic, and kopiur repository credentials.
 
 ## Network architecture
 

@@ -24,30 +24,22 @@ update-node node ip:
 
 # Bootstrap
 bootstrap cluster:
-    kubectl create namespace external-secrets --dry-run=client -o yaml | kubectl apply -f -
-    kubectl apply -k bootstrap/kustomize/personal/external-secrets/
+    just sops-secret
     kubectl apply -k kubernetes/flux/cluster/
 
-# Create Vaultwarden bootstrap secret
-vaultwarden-secret client_secret:
+# Create the SOPS age decryption secret used by Flux (reads ./age.key)
+sops-secret:
     #!/usr/bin/env bash
     set -euo pipefail
-    
-    VAULTWARDEN_TOKEN=$(curl -sX POST https://vault.1337.pet/identity/connect/token \
-      -H "Content-Type: application/x-www-form-urlencoded" \
-      -d "grant_type=client_credentials&scope=api&device_type=14&device_identifier=homelab-kubernetes&device_name=Kubernetes&client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c&client_secret={{client_secret}}" \
-      | jq -r '.access_token')
-    
-    if [[ -z "$VAULTWARDEN_TOKEN" || "$VAULTWARDEN_TOKEN" == "null" ]]; then
-        echo "Failed to get Vaultwarden token"
+
+    if [[ ! -f age.key ]]; then
+        echo "age.key not found. Generate it with: age-keygen -o age.key"
         exit 1
     fi
-    
-    kubectl create ns external-secrets --dry-run=client -o yaml | kubectl apply -f -
-    kubectl -n external-secrets create secret generic vaultwarden-secret \
-      --from-literal=token="$VAULTWARDEN_TOKEN" \
-      --from-literal=client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c \
-      --from-literal=client_secret={{client_secret}} \
-      --from-literal=organization_id=76cb6e80-15c7-4fb8-8a11-e7489a28c045
-    
-    echo "Vaultwarden secret created successfully"
+
+    kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+    kubectl -n flux-system create secret generic sops-age \
+      --from-file=age.agekey=age.key \
+      --dry-run=client -o yaml | kubectl apply -f -
+
+    echo "sops-age secret created successfully"

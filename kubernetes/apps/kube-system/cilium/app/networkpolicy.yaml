@@ -72,12 +72,6 @@ spec:
             io.kubernetes.pod.namespace: cert-manager
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: external-secrets
-      fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: external-secrets
-    - toEndpoints:
-        - matchLabels:
             io.kubernetes.pod.namespace: network
       fromEndpoints:
         - matchLabels:

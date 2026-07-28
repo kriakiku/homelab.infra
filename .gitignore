@@ -13,3 +13,6 @@ kubeconfig
 talosconfig
 talos/secrets.yaml
 talos/generated/
+
+age.key
+*.agekey

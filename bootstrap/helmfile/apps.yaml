@@ -63,15 +63,10 @@ releases:
     needs:
       - kube-system/spegel
 
-  - name: external-secrets
-    namespace: external-secrets
-    needs:
-      - cert-manager/cert-manager
-
   - name: flux-operator
     namespace: flux-system
     needs:
-      - external-secrets/external-secrets
+      - cert-manager/cert-manager
 
   - name: flux-instance
     namespace: flux-system

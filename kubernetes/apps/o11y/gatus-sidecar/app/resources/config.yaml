@@ -31,7 +31,7 @@ metrics: true
 storage:
   type: postgres
   caching: true
-  connectionString: ${PG_CONNECTION_STRING}
+  path: ${PG_CONNECTION_STRING}
 
 ui:
   title: Status | Gatus

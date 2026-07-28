@@ -89,13 +89,11 @@ spec:
                   secretKeyRef:
                     name: one-api-oidc-credentials
                     key: client_id
-                    optional: true
               OIDC_CLIENT_SECRET:
                 valueFrom:
                   secretKeyRef:
                     name: one-api-oidc-credentials
                     key: client_secret
-                    optional: true
             # After One API starts, configure OIDC and the public server address
             # using the admin access token and One API's option update endpoint.
             lifecycle:

@@ -55,6 +55,35 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: [ALL] }
+          # Debian Trixie paperless image only ships eng/deu/fra/ita/spa via apt.
+          # Seed lit/ukr/rus from tessdata_fast onto a shared volume.
+          init-tessdata:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 3.0.4
+            command:
+              - /bin/bash
+              - -ec
+              - |
+                set -euo pipefail
+                DEST=/tessdata
+                mkdir -p "$DEST"
+                cp -an /usr/share/tesseract-ocr/5/tessdata/. "$DEST/" || true
+                cd "$DEST"
+                for lang in lit ukr rus; do
+                  if [[ ! -s "${lang}.traineddata" ]]; then
+                    echo "Downloading ${lang}.traineddata"
+                    curl -fsSL -o "${lang}.traineddata" \
+                      "https://github.com/tesseract-ocr/tessdata_fast/raw/main/${lang}.traineddata"
+                  fi
+                done
+                tesseract --list-langs
+            env:
+              TESSDATA_PREFIX: /tessdata
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: [ALL] }
         containers:
           app:
             image:
@@ -71,7 +100,7 @@ spec:
               PAPERLESS_PROXY_SSL_HEADER: '["HTTP_X_FORWARDED_PROTO", "https"]'
               PAPERLESS_TIME_ZONE: Europe/Vilnius
               PAPERLESS_OCR_LANGUAGE: eng+lit+ukr+rus
-              PAPERLESS_OCR_LANGUAGES: lit ukr rus
+              TESSDATA_PREFIX: /usr/share/tesseract-ocr/5/tessdata
               PAPERLESS_DBHOST: main-db-rw.databases.svc.cluster.local
               PAPERLESS_DBPORT: "5432"
               PAPERLESS_DBNAME: paperless
@@ -290,6 +319,19 @@ spec:
           paperless:
             app:
               - path: /usr/src/paperless/data
+      # OCR language packs (eng shipped in image; lit/ukr/rus downloaded once)
+      tessdata:
+        type: custom
+        volumeSpec:
+          nfs:
+            server: nfs.1337.pet
+            path: /export/nvme/paperless/tessdata
+        advancedMounts:
+          paperless:
+            init-tessdata:
+              - path: /tessdata
+            app:
+              - path: /usr/share/tesseract-ocr/5/tessdata
       # Documents — HDD
       media:
         type: custom

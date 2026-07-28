@@ -17,10 +17,11 @@ spec:
         pod:
           labels:
             egress: "true"
+          # Paperless s6 entrypoint installs OCR language packs via apt; needs root.
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
+            runAsNonRoot: false
+            runAsUser: 0
+            runAsGroup: 0
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
@@ -48,6 +49,9 @@ spec:
                 WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'paperless')\gexec
                 SQL
             securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: [ALL] }
@@ -72,7 +76,7 @@ spec:
               PAPERLESS_DBPORT: "5432"
               PAPERLESS_DBNAME: paperless
               PAPERLESS_DBUSER: paperless
-              PAPERLESS_DBSSLMODE: disable
+              PAPERLESS_DB_OPTIONS: '{"sslmode":"disable"}'
               PAPERLESS_REDIS: redis://localhost:6379
               PAPERLESS_TIKA_ENABLED: "true"
               PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
@@ -86,7 +90,6 @@ spec:
               PAPERLESS_DATA_DIR: /usr/src/paperless/data
               PAPERLESS_MEDIA_ROOT: /usr/src/paperless/media
               PAPERLESS_EMPTY_TRASH_DIR: /usr/src/paperless/trash
-              PAPERLESS_FILENAME_FORMAT: "{created_year}/{correspondent}/{title}"
               PAPERLESS_FILENAME_FORMAT_REMOVE_NONE: "true"
               PAPERLESS_CONSUMER_RECURSIVE: "true"
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
@@ -125,7 +128,7 @@ spec:
                   httpGet:
                     path: /
                     port: *port
-                  failureThreshold: 60
+                  failureThreshold: 90
                   periodSeconds: 5
             securityContext:
               allowPrivilegeEscalation: false

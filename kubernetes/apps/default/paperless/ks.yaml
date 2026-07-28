@@ -7,6 +7,8 @@ metadata:
 spec:
   dependsOn:
     - name: pocket-id
+    - name: nfs-mkdir
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/default/paperless/app
   prune: true

@@ -11,6 +11,8 @@ spec:
   dependsOn:
     - name: pocket-id
       namespace: default
+    - name: nfs-mkdir
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/media/qui/app
   postBuild:

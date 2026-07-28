@@ -4,6 +4,9 @@ kind: Kustomization
 metadata:
   name: o11y-storage
 spec:
+  dependsOn:
+    - name: nfs-mkdir
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/o11y/storage
   prune: true

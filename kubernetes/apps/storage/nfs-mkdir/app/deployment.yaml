@@ -1,0 +1,144 @@
+---
+# Ensures NFS export subdirectories exist with the right ownership.
+# Mounts parent exports and reconciles paths from ConfigMap nfs-mkdir-paths.
+# Requires the NFS server to allow root chown (no_root_squash) or equivalent.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-mkdir
+  labels:
+    app.kubernetes.io/name: nfs-mkdir
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nfs-mkdir
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nfs-mkdir
+    spec:
+      # Single-node worker is fine; no need to schedule on control-plane.
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: false
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: ensure
+          image: docker.io/library/busybox:1.37.0@sha256:7a3ebe5bfd1a4a19797d20b0c0bb39d44393e9a03fd852c0865b0f540d868df0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              paths_file=/config/paths
+              interval="${RECONCILE_INTERVAL:-300}"
+
+              ensure_once() {
+                echo "nfs-mkdir: reconciling paths from ${paths_file}"
+                while IFS= read -r line || [ -n "$line" ]; do
+                  # trim + skip blanks/comments
+                  line=$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                  case "$line" in ''|\#*) continue ;; esac
+
+                  set -- $line
+                  rel="$1"
+                  uid="${2:-1000}"
+                  gid="${3:-1000}"
+                  mode="${4:-0755}"
+
+                  root="${rel%%/*}"
+                  rest="${rel#*/}"
+                  if [ "$root" = "$rel" ] || [ -z "$rest" ]; then
+                    echo "nfs-mkdir: skip invalid path entry: $line" >&2
+                    continue
+                  fi
+                  if [ "$root" != "hdd" ] && [ "$root" != "nvme" ]; then
+                    echo "nfs-mkdir: skip unknown root '$root' in: $line" >&2
+                    continue
+                  fi
+
+                  target="/mnt/${root}/${rest}"
+                  if ! mkdir -p "$target"; then
+                    echo "nfs-mkdir: mkdir failed: $target" >&2
+                    continue
+                  fi
+                  if ! chown "${uid}:${gid}" "$target"; then
+                    echo "nfs-mkdir: chown ${uid}:${gid} failed: $target (check NFS no_root_squash)" >&2
+                  fi
+                  if ! chmod "$mode" "$target"; then
+                    echo "nfs-mkdir: chmod $mode failed: $target" >&2
+                  fi
+                  echo "nfs-mkdir: ok $target (${uid}:${gid} mode ${mode})"
+                done < "$paths_file"
+              }
+
+              # First pass immediately (apps depending on this need dirs ASAP).
+              ensure_once
+              # Mark ready after the first successful reconcile cycle.
+              touch /tmp/ready
+
+              while true; do
+                sleep "$interval"
+                ensure_once
+              done
+          env:
+            - name: RECONCILE_INTERVAL
+              value: "300"
+          startupProbe:
+            exec:
+              command: [/bin/sh, -c, test -f /tmp/ready]
+            failureThreshold: 30
+            periodSeconds: 2
+          readinessProbe:
+            exec:
+              command: [/bin/sh, -c, test -f /tmp/ready]
+            periodSeconds: 30
+          livenessProbe:
+            exec:
+              command: [/bin/sh, -c, test -f /tmp/ready]
+            periodSeconds: 60
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+              add: [CHOWN, FOWNER, DAC_OVERRIDE]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+            - name: hdd
+              mountPath: /mnt/hdd
+            - name: nvme
+              mountPath: /mnt/nvme
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: nfs-mkdir-paths
+        - name: hdd
+          nfs:
+            server: nfs.1337.pet
+            path: /export/hdd
+        - name: nvme
+          nfs:
+            server: nfs.1337.pet
+            path: /export/nvme
+        - name: tmp
+          emptyDir:
+            sizeLimit: 8Mi

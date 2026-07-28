@@ -18,6 +18,15 @@ spec:
     size: 10Gi
     storageClass: local-path
 
+  # Shared instance backing 9 app databases (pocketid, gatus, paperless,
+  # linkwarden, vaultwarden, mailarchiver, penpot, kestra, oneapi).
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+
   managed:
     roles:
       - name: pocketid

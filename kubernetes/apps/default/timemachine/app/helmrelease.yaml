@@ -83,7 +83,7 @@ spec:
                 cpu: 25m
                 memory: 64Mi
               limits:
-                memory: 512Mi
+                memory: 256Mi
 
     # Prefer the worker, but allow the control-plane when k8s-1 is memory-full.
     defaultPodOptions:

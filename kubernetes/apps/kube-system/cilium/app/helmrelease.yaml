@@ -60,8 +60,21 @@ spec:
           enabled: false
       replicas: 2
       rollOutPods: true
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
     pmtuDiscovery:
       enabled: true
+    # eBPF datapath agent observed at ~330-410Mi per node in practice.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 384Mi
+      limits:
+        memory: 768Mi
     prometheus:
       enabled: true
       serviceMonitor:

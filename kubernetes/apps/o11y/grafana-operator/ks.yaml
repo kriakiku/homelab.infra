@@ -23,6 +23,8 @@ metadata:
 spec:
   dependsOn:
     - name: grafana-operator
+    - name: pocket-id
+      namespace: default
   interval: 1h
   path: ./kubernetes/apps/o11y/grafana-operator/instance
   prune: true

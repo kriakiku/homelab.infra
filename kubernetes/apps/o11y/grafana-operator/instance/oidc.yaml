@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: grafana
+spec:
+  friendlyName: Grafana
+  # Members can be added in the Pocket ID UI; the operator will not overwrite them.
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: grafana
+spec:
+  name: Grafana
+  clientID: grafana
+  pkceEnabled: true
+  skipConsent: true
+  callbackUrls:
+    - https://grafana.1337.pet/login/generic_oauth
+  logo:
+    nameOverride: grafana
+  allowedUserGroups:
+    - name: grafana
+  secret:
+    name: grafana-oidc-credentials
+    keys:
+      clientID: client_id
+      clientSecret: client_secret
+      issuerUrl: issuer_url
+      discoveryUrl: discovery_url

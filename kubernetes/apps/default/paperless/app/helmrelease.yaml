@@ -17,11 +17,8 @@ spec:
         pod:
           labels:
             egress: "true"
-          # Paperless s6 entrypoint installs OCR language packs via apt; needs root.
+          # Paperless app runs as root; redis overrides uid below.
           securityContext:
-            runAsNonRoot: false
-            runAsUser: 0
-            runAsGroup: 0
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
@@ -160,11 +157,14 @@ spec:
                   failureThreshold: 90
                   periodSeconds: 5
             securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
               capabilities:
                 drop: [ALL]
-                add: [CHOWN, FOWNER, SETUID, SETGID]
+                add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE]
             resources:
               requests:
                 cpu: 100m
@@ -189,6 +189,9 @@ spec:
                   exec:
                     command: [redis-cli, ping]
             securityContext:
+              runAsUser: 999
+              runAsGroup: 999
+              runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: [ALL] }

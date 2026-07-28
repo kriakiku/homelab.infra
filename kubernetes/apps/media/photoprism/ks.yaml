@@ -3,21 +3,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: qui
+  name: photoprism
 spec:
-  components:
-    - ../../../../components/kopiur/backup
-    - ../../../../components/zeroscaler
+  # No kopiur: originals on NFS HDD are the Google/iCloud backup source of truth.
+  # Index DB lives in shared CNPG main-db (backed up via Barman → SeaweedFS).
   dependsOn:
     - name: pocket-id
       namespace: identity
+    - name: cloudnative-pg-clusters
+      namespace: databases
     - name: nfs-mkdir
       namespace: storage
   interval: 1h
-  path: ./kubernetes/apps/media/qui/app
-  postBuild:
-    substitute:
-      APP: qui
+  path: ./kubernetes/apps/media/photoprism/app
   prune: true
   sourceRef:
     kind: GitRepository

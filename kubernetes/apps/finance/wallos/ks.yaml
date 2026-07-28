@@ -3,25 +3,22 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: qui
+  name: wallos
 spec:
   components:
     - ../../../../components/kopiur/backup
-    - ../../../../components/zeroscaler
   dependsOn:
     - name: pocket-id
       namespace: identity
-    - name: nfs-mkdir
-      namespace: storage
   interval: 1h
-  path: ./kubernetes/apps/media/qui/app
+  path: ./kubernetes/apps/finance/wallos/app
   postBuild:
     substitute:
-      APP: qui
+      APP: wallos
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: media
+  targetNamespace: finance
   wait: false

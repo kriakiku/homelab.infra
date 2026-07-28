@@ -85,13 +85,25 @@ spec:
             io.kubernetes.pod.namespace: media
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: default
+            io.kubernetes.pod.namespace: identity
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: productivity
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: finance
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: automation
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: mail
 
     # ─── pocket-id → smtp-relay :25 ───
     - toServices:
         - k8sService:
             serviceName: smtp-relay
-            namespace: default
+            namespace: mail
       toPorts:
         - ports:
             - port: "25"
@@ -125,11 +137,11 @@ spec:
             - port: "80"
               protocol: TCP
 
-    # ─── qui → pocket-id (OIDC) :1411 ───
+    # ─── apps → pocket-id (OIDC) :1411 ───
     - toServices:
         - k8sService:
             serviceName: pocket-id
-            namespace: default
+            namespace: identity
       toPorts:
         - ports:
             - port: "1411"

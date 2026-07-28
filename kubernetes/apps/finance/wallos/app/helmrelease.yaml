@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wallos
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: wallos
+  interval: 1h
+  values:
+    controllers:
+      wallos:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/bellamy/wallos
+              tag: 5.4.2@sha256:316f26e13265958e7946ef98ff600516fddc51d698ee98bd1ae1577e5e00789f
+            env:
+              TZ: Europe/Vilnius
+              # Wallos is SQLite-only and stores logos on local disk (no Postgres / S3).
+              OIDC_ENABLED: "true"
+              OIDC_PROVIDER_NAME: Pocket ID
+              OIDC_ISSUER: https://auth.1337.pet
+              OIDC_REDIRECT_URL: https://wallos.1337.pet/index.php
+              OIDC_SCOPES: openid email profile
+              OIDC_AUTO_CREATE_USER: "true"
+              OIDC_DISABLE_PASSWORD_LOGIN: "false"
+              OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: wallos-oidc-credentials
+                    key: client_id
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: wallos-oidc-credentials
+                    key: client_secret
+              # Allow resolving auth.1337.pet / in-cluster IdP for OIDC token exchange.
+              SSRF_ALLOWLIST: auth.1337.pet,pocket-id.identity.svc.cluster.local
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 80
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+            # Official image runs Apache/PHP as root.
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+                add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE, NET_BIND_SERVICE]
+            resources:
+              requests:
+                cpu: 25m
+                memory: 96Mi
+              limits:
+                memory: 256Mi
+
+    service:
+      app:
+        controller: wallos
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          item.homer.rajsingh.info/name: "Wallos"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wallos.png"
+          item.homer.rajsingh.info/subtitle: "Subscription Tracker"
+          service.homer.rajsingh.info/name: "Personal"
+          service.homer.rajsingh.info/icon: "fa-solid fa-wallet"
+        hostnames:
+          - wallos.1337.pet
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    persistence:
+      data:
+        existingClaim: wallos
+        advancedMounts:
+          wallos:
+            app:
+              - path: /var/www/html/db
+                subPath: db
+              - path: /var/www/html/images/uploads/logos
+                subPath: logos
+      tmp:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 256Mi
+        globalMounts:
+          - path: /tmp

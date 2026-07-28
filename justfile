@@ -45,16 +45,20 @@ sops-secret:
 
     namespaces=(
         actions-runner-system
+        automation
         backup
         cert-manager
         databases
-        default
+        finance
         flux-system
+        identity
         kopiur-system
         kube-system
+        mail
         media
         network
         o11y
+        productivity
         storage
         system-upgrade
     )

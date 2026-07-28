@@ -12,5 +12,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./brrpolice/ks.yaml
+  - ./photoprism/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml

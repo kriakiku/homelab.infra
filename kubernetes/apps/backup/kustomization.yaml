@@ -11,3 +11,4 @@ resources:
   - ./namespace.yaml
   - ./restic-backup/ks.yaml
   - ./restic-documents/ks.yaml
+  - ./timemachine/ks.yaml

@@ -7,14 +7,13 @@ spec:
   endpointSelector: {}
 
   ingress:
-    # HTTP routing from envoy-gateway to all apps
+    # Allow all intra-cluster pod-to-pod traffic (cross-node DNS, service mesh, etc.)
     - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
-    # Prometheus metrics scraping
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: o11y
+        - {}
+    # Allow node health checks and kubelet
+    - fromEntities:
+        - host
+        - remote-node
 
   egress:
     # ─── Global: DNS ───
@@ -47,7 +46,7 @@ spec:
             - port: "53"
               protocol: TCP
 
-    # ─── Intra-namespace ───
+    # ─── Intra-cluster: all namespaces ───
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -75,6 +74,9 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: databases
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: default
 
     # ─── pocket-id → smtp-relay :25 ───
     - toServices:

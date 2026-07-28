@@ -206,7 +206,7 @@ spec:
             nfs-access: "true"
 
     # ─── Internet (labeled pods only) ───
-    - toEnds:
+    - toEndpoints:
         - matchLabels:
             egress: "true"
       toCIDRSet:

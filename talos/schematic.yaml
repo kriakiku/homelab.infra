@@ -8,3 +8,6 @@ customization:
       - siderolabs/amd-ucode # AMD CPU microcode
       - siderolabs/amdgpu # AMD iGPU (Radeon Vega)
       - siderolabs/kata-containers # ARC runners
+      - siderolabs/qemu-guest-agent # Proxmox integration
+      - siderolabs/nfs-utils # NFS client support
+      - siderolabs/util-linux-tools # lsblk, mount, etc.

@@ -48,7 +48,7 @@ machine:
         wsize=1048576
   install:
     disk: /dev/sda
-    image: factory.talos.dev/metal-installer/a79a889f330123eda622fc93eaccb82f13f2c9b688df34422c82310a67cc5bd7:v1.13.7
+    image: factory.talos.dev/metal-installer/434f313f73662fa228468d2f78510cdf5034ee6c93478230089cf27f5e79509e:v1.13.7
     wipe: true
   kernel:
     modules:
@@ -93,6 +93,10 @@ machine:
     sunrpc.tcp_slot_table_entries: "128"
     user.max_user_namespaces: "11255"
     vm.nr_hugepages: "1024"
+  time:
+    servers:
+      - time.cloudflare.com
+      - time.google.com
   token: {{ trustdinfo.token }}
 cluster:
   ca:
@@ -118,7 +122,7 @@ cluster:
       name: none
     dnsDomain: cluster.local
     podSubnets:
-      - 10.10.99.0/24
+      - 10.10.98.0/23
     serviceSubnets:
       - 10.43.0.0/16
 {% if machine.type == "controlplane" %}
@@ -136,6 +140,7 @@ cluster:
       - k8s.1337.pet
     disablePodSecurityPolicy: true
     extraArgs:
+      bind-address: 0.0.0.0
       enable-aggregator-routing: "true"
       feature-gates: HPAScaleToZero=true
     image: registry.k8s.io/kube-apiserver:v1.36.3
@@ -145,10 +150,10 @@ cluster:
       feature-gates: HPAScaleToZero=true
     image: registry.k8s.io/kube-controller-manager:v1.36.3
   coreDNS:
-    disabled: true
+    disabled: false
   etcd:
     advertisedSubnets:
-      - 10.10.99.0/24
+      - 10.10.4.0/24
     ca:
       crt: {{ certs.etcd.crt }}
       key: {{ certs.etcd.key }}
@@ -156,7 +161,6 @@ cluster:
       listen-metrics-urls: http://0.0.0.0:2381
   proxy:
     disabled: true
-    image: registry.k8s.io/kube-proxy:v1.36.3
   scheduler:
     config:
       apiVersion: kubescheduler.config.k8s.io/v1

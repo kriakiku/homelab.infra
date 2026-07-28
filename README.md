@@ -65,8 +65,8 @@ talosctl kubeconfig -n <controlplane-ip> -f
 
 ```bash
 VAULTWARDEN_TOKEN=$(curl -sX POST https://vault.1337.pet/identity/connect/token \
-  -d "grant_type=client_credentials&scope=api" \
-  -u "user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c:<client_secret>" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=client_credentials&scope=api&device_type=14&device_identifier=homelab-kubernetes&device_name=Kubernetes&client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c&client_secret=<client_secret>" \
   | jq -r '.access_token')
 
 kubectl create ns external-secrets --dry-run=client -o yaml | kubectl apply -f -
@@ -75,6 +75,12 @@ kubectl -n external-secrets create secret generic vaultwarden-secret \
   --from-literal=client_id=user.8fc3a70e-ffaa-4afc-891f-c01ebfc9e43c \
   --from-literal=client_secret=<client_secret> \
   --from-literal=organization_id=76cb6e80-15c7-4fb8-8a11-e7489a28c045
+```
+
+Or use the justfile command:
+
+```bash
+just vaultwarden-secret <client_secret>
 ```
 
 ### 5. Bootstrap cluster
@@ -119,7 +125,7 @@ ESO's `vaultwarden` ClusterSecretStore syncs them into Kubernetes Secrets via `d
 | VLAN 5 | `10.10.5.0/24` | Storage — NFS, isolated by CiliumNetworkPolicy |
 | VLAN 6 | `10.10.6.0/24` | Egress — internet access, client isolation |
 | VLAN 7 | `10.10.7.0/24` | VPN |
-| — | `10.10.99.0/24` | Pod CIDR (internal to Cilium) |
+| — | `10.10.98.0/23` | Pod CIDR (internal to Cilium) |
 | — | `10.43.0.0/16` | Service CIDR (internal) |
 
 ### Node networking

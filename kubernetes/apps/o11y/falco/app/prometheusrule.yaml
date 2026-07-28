@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: falco
+  labels:
+    app.kubernetes.io/name: falco
+spec:
+  groups:
+    - name: falco.events
+      interval: 1m
+      rules:
+        # Fire once when any critical/alert/emergency event is seen.
+        # Routes to Pushover via the existing AlertmanagerConfig.
+        - alert: FalcoCriticalSecurityEvent
+          expr: |
+            sum by (rule, priority, source, namespace) (
+              increase(falcosidekick_events_total{priority=~"critical|alert|emergency"}[5m])
+            ) > 0
+          for: 0m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Falco — critical runtime security event"
+            description: >-
+              {{ $labels.priority | toUpper }} rule "{{ $labels.rule }}"
+              triggered in namespace {{ $labels.namespace }}
+              (source: {{ $labels.source }}).
+
+        # Warn if Falco is dropping system calls — means it's overwhelmed.
+        - alert: FalcoEventDroppingMode
+          expr: |
+            falco_metrics_falco_duration_seconds_total > 0
+              and increase(falco_metrics_falco_ignored_events_total[5m]) > 50
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Falco is dropping syscall events"
+            description: >-
+              Falco dropped {{ $value | humanize }} events in the last 5 minutes.
+              Consider raising priority threshold or reducing monitored namespaces.
+
+        # Falcosidekick output delivery failure (e.g. Alertmanager unreachable)
+        - alert: FalcosidekickOutputError
+          expr: |
+            increase(falcosidekick_outputs_total{status="error"}[15m]) > 5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Falcosidekick output {{ $labels.destination }} is failing"
+            description: >-
+              {{ $value | humanize }} delivery failures to {{ $labels.destination }}
+              in the last 15 minutes.

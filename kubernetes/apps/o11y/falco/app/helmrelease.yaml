@@ -1,0 +1,120 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: falco
+spec:
+  chart:
+    spec:
+      chart: falco
+      version: "9.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: falcosecurity
+  interval: 1h
+  values:
+    # ── Driver ─────────────────────────────────────────────────────────────
+    # modern_ebpf: no kernel module, no image downloading, low overhead.
+    # leastPrivileged drops all capabilities except CAP_BPF + CAP_PERFMON.
+    driver:
+      kind: modern_ebpf
+      modernEbpf:
+        leastPrivileged: true
+
+    # ── Kubernetes meta-collector ──────────────────────────────────────────
+    collectors:
+      enabled: true
+      kubernetes:
+        enabled: true
+
+    # ── Falco daemon configuration ─────────────────────────────────────────
+    falco:
+      # Only process events at WARNING priority or above.
+      # This is the single most effective knob for reducing CPU usage.
+      priority: warning
+      json_output: true
+      json_include_output_property: true
+      json_include_tags_property: true
+      log_level: info
+      log_stderr: true
+      # Built-in Prometheus metrics endpoint on :8765
+      metrics:
+        enabled: true
+        interval: 15s
+        outputRule: true
+        resourceUtilizationEnabled: true
+
+    # ── Resources ─────────────────────────────────────────────────────────
+    # Conservative sizing for a 2-node homelab.
+    # No CPU limit — eBPF probes should not be throttled.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 512Mi
+
+    # ── ServiceMonitor (Prometheus scrape) ─────────────────────────────────
+    serviceMonitor:
+      enabled: true
+
+    # ── Falcosidekick ──────────────────────────────────────────────────────
+    falcosidekick:
+      enabled: true
+
+      replicaCount: 1
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+
+      # ServiceMonitor for Falcosidekick's own Prometheus metrics
+      serviceMonitor:
+        enabled: true
+
+      config:
+        # Attach cluster label to every forwarded event
+        customfields: "cluster:home-ops"
+
+        # ── Prometheus output (event counters by rule/priority) ──────────
+        prometheus:
+          enabled: true
+          extralabels: "rule,priority,source,namespace"
+
+        # ── Victoria Logs via Loki-compatible ingest API ─────────────────
+        # VictoriaLogs supports /insert/loki/api/v1/push.
+        # Forward warning+ events for searchability in the log UI.
+        loki:
+          hostport: "http://victoria-logs.o11y.svc.cluster.local:9428"
+          endpoint: "/insert/loki/api/v1/push"
+          minimumpriority: "warning"
+          format: "json"
+          checkcert: false
+          # Disable the ConfigMap dashboard (no Loki datasource in Grafana yet)
+          grafanaDashboard:
+            enabled: false
+
+        # ── Alertmanager (→ Pushover via existing AlertmanagerConfig) ─────
+        # Forward error+ events directly to Alertmanager.
+        # Route: Alertmanager default receiver → Pushover.
+        alertmanager:
+          hostport: "http://alertmanager-operated.o11y.svc.cluster.local:9093"
+          endpoint: "/api/v2/alerts"
+          minimumpriority: "error"
+          checkcert: false
+          expireafter: "30m"
+
+      # ── Falcosidekick WebUI ─────────────────────────────────────────────
+      # Visual event timeline, exposed on envoy-internal.
+      webui:
+        enabled: true
+        replicaCount: 1
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi

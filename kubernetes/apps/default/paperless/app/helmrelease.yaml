@@ -88,7 +88,7 @@ spec:
               tag: 3.0.4
             env:
               PAPERLESS_URL: https://paperless.1337.pet
-              PAPERLESS_ALLOWED_HOSTS: paperless.1337.pet
+              PAPERLESS_ALLOWED_HOSTS: "*"
               PAPERLESS_CSRF_TRUSTED_ORIGINS: https://paperless.1337.pet
               PAPERLESS_CORS_ALLOWED_HOSTS: https://paperless.1337.pet
               PAPERLESS_PORT: &port 8000

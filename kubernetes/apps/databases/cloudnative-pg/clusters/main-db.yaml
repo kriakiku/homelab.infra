@@ -15,6 +15,8 @@ spec:
         name: main-db-owner-secret
 
   storage:
+    # Provisioned on k8s-1 UserVolume /var/mnt/local-hostpath (scsi1 ~150GB),
+    # not the 32GB OS disk. See local-path-provisioner nodePathMap + Talos UserVolumeConfig.
     size: 10Gi
     storageClass: local-path
 

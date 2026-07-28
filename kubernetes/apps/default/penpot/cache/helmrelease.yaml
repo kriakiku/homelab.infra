@@ -54,10 +54,6 @@ spec:
         runAsUser: 999
         runAsGroup: 999
         fsGroup: 999
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
 
     service:
       app:

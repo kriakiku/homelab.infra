@@ -16,12 +16,9 @@ spec:
       delayStartSeconds: "5"
       env:
         TZ: America/New_York
-        PG_CONNECTION_STRING:
-          valueFrom:
-            secretKeyRef:
-              name: main-db-gatus-secret
-              key: uri
       envFrom:
+        - secretRef:
+            name: main-db-gatus-secret
         - secretRef:
             name: "{{ .Release.Name }}-secret"
     sidecar:

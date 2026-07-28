@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: photoprism
+spec:
+  friendlyName: PhotoPrism
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: photoprism
+spec:
+  name: PhotoPrism
+  clientID: photoprism
+  pkceEnabled: true
+  skipConsent: true
+  callbackUrls:
+    - https://photoprism.1337.pet/api/v1/oidc/redirect
+  logo:
+    nameOverride: photoprism
+  allowedUserGroups:
+    - name: photoprism
+  secret:
+    name: photoprism-oidc-credentials
+    keys:
+      clientID: client_id
+      clientSecret: client_secret
+      issuerUrl: issuer_url
+      discoveryUrl: discovery_url

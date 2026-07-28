@@ -1,0 +1,274 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: photoprism
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: photoprism
+  interval: 1h
+  values:
+    controllers:
+      photoprism:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            egress: "true"
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          # Wait for MariaDB to be ready before PhotoPrism starts.
+          wait-db:
+            image:
+              repository: docker.io/library/mariadb
+              tag: lts@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
+            env:
+              MYSQL_PWD:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-secret
+                    key: MARIADB_ROOT_PASSWORD
+            command:
+              - /bin/sh
+              - -ec
+              - |
+                until mariadb -h 127.0.0.1 -u root -p"$MYSQL_PWD" -e "SELECT 1" >/dev/null 2>&1; do
+                  echo "Waiting for MariaDB..."; sleep 2
+                done
+                echo "MariaDB ready"
+            securityContext:
+              runAsUser: 999
+              runAsGroup: 999
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ALL] }
+        containers:
+          # ── MariaDB sidecar ──────────────────────────────────────────────
+          # PhotoPrism only supports MySQL/MariaDB (not PostgreSQL).
+          mariadb:
+            image:
+              repository: docker.io/library/mariadb
+              tag: lts@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
+            env:
+              MARIADB_DATABASE: photoprism
+              MARIADB_USER: photoprism
+              MARIADB_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-secret
+                    key: MARIADB_PASSWORD
+              MARIADB_ROOT_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-secret
+                    key: MARIADB_ROOT_PASSWORD
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [mariadb-admin, ping, -h, 127.0.0.1]
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: [mariadb, -h, 127.0.0.1, -u, root, -e, "SELECT 1"]
+                  periodSeconds: 10
+                  failureThreshold: 5
+            securityContext:
+              runAsUser: 999
+              runAsGroup: 999
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: [ALL] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+          # ── PhotoPrism ───────────────────────────────────────────────────
+          app:
+            image:
+              repository: docker.io/photoprism/photoprism
+              tag: latest@sha256:95864222022316a4372f2969151d18710a7533112b43a2b0da22f509f008fbac
+            env:
+              # Site
+              PHOTOPRISM_SITE_URL: https://photoprism.1337.pet/
+              PHOTOPRISM_SITE_TITLE: PhotoPrism
+              PHOTOPRISM_ORIGINALS_LIMIT: "0"
+              TZ: Europe/Vilnius
+              # Auth — keep password login for admin fallback
+              PHOTOPRISM_AUTH_MODE: password
+              PHOTOPRISM_ADMIN_USER: admin
+              PHOTOPRISM_ADMIN_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-secret
+                    key: PHOTOPRISM_ADMIN_PASSWORD
+              # OIDC — from pocket-id-operator (optional: pod starts even without secret)
+              PHOTOPRISM_OIDC_URI: https://auth.1337.pet
+              PHOTOPRISM_OIDC_PROVIDER: Pocket ID
+              PHOTOPRISM_OIDC_REGISTER: "true"
+              PHOTOPRISM_OIDC_REDIRECT: "false"
+              PHOTOPRISM_OIDC_SCOPES: openid email profile
+              PHOTOPRISM_OIDC_CLIENT:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-oidc-credentials
+                    key: client_id
+                    optional: true
+              PHOTOPRISM_OIDC_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-oidc-credentials
+                    key: client_secret
+                    optional: true
+              # Database — MariaDB sidecar on localhost
+              PHOTOPRISM_DATABASE_DRIVER: mysql
+              PHOTOPRISM_DATABASE_SERVER: "127.0.0.1:3306"
+              PHOTOPRISM_DATABASE_NAME: photoprism
+              PHOTOPRISM_DATABASE_USER: photoprism
+              PHOTOPRISM_DATABASE_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: photoprism-secret
+                    key: PHOTOPRISM_DATABASE_PASSWORD
+              # Storage paths
+              PHOTOPRISM_ORIGINALS_PATH: /photos/originals
+              PHOTOPRISM_IMPORT_PATH: /photos/import
+              PHOTOPRISM_STORAGE_PATH: /storage
+              # Performance
+              PHOTOPRISM_WORKERS: "2"
+              PHOTOPRISM_DISABLE_CHOWN: "false"
+              PHOTOPRISM_DISABLE_TLS: "true"
+              PHOTOPRISM_DEFAULT_TLS: "false"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: &port 2342
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  failureThreshold: 90
+                  periodSeconds: 5
+            # PhotoPrism init script runs as root then drops to UID
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+                add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE]
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+
+    service:
+      app:
+        controller: photoprism
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          item.homer.rajsingh.info/name: "PhotoPrism"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/photoprism.png"
+          item.homer.rajsingh.info/subtitle: "Photo Library"
+          service.homer.rajsingh.info/name: "Personal"
+          service.homer.rajsingh.info/icon: "fa-solid fa-images"
+        hostnames:
+          - photoprism.1337.pet
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    persistence:
+      # MariaDB data — NVMe for fast queries
+      db-data:
+        existingClaim: photoprism-db
+        advancedMounts:
+          photoprism:
+            mariadb:
+              - path: /var/lib/mysql
+
+      # PhotoPrism storage (thumbnails, sidecar, cache) — NVMe
+      storage:
+        existingClaim: photoprism-storage
+        advancedMounts:
+          photoprism:
+            app:
+              - path: /storage
+
+      # Photos originals — HDD NFS
+      photos-originals:
+        type: custom
+        volumeSpec:
+          nfs:
+            server: nfs.1337.pet
+            path: /export/hdd/photos/originals
+        advancedMounts:
+          photoprism:
+            app:
+              - path: /photos/originals
+
+      # Import folder — HDD NFS
+      photos-import:
+        type: custom
+        volumeSpec:
+          nfs:
+            server: nfs.1337.pet
+            path: /export/hdd/photos/import
+        advancedMounts:
+          photoprism:
+            app:
+              - path: /photos/import
+
+      # MariaDB and PhotoPrism both need /tmp
+      tmp:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 512Mi
+        globalMounts:
+          - path: /tmp

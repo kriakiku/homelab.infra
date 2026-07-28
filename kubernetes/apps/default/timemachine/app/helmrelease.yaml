@@ -1,0 +1,124 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: timemachine
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: timemachine
+  interval: 1h
+  values:
+    controllers:
+      timemachine:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/mbentley/timemachine
+              tag: smb@sha256:333d42234c281acd7f1b40bb7458780b246de3dd4f568eca1ff36354760550f6
+            env:
+              TM_USERNAME: timemachine
+              TM_GROUPNAME: timemachine
+              TM_UID: "1000"
+              TM_GID: "1000"
+              SET_PERMISSIONS: "false"
+              SHARE_NAME: TimeMachine
+              # 1 TiB quota
+              VOLUME_SIZE_LIMIT: 1 T
+              # NFS does not support xattr — use netatalk .AppleDouble metadata
+              # instead of xattr streams so Time Machine works over NFS-backed shares.
+              SMB_VFS_OBJECTS: fruit
+              SMB_METADATA: netatalk
+              SMB_NFS_ACES: "no"
+              SMB_PORT: "445"
+              WORKGROUP: WORKGROUP
+              CUSTOM_SMB_CONF: "false"
+              HIDE_SHARES: "no"
+              TZ: Europe/Vilnius
+              PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: timemachine-secret
+                    key: PASSWORD
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 445
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+            # Samba must run as root to create system users and bind port 445.
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+                add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE, NET_BIND_SERVICE, SYS_ADMIN]
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+
+    service:
+      app:
+        controller: timemachine
+        # Internal LoadBalancer — reachable from LAN only, not via Cloudflare tunnel.
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 10.10.4.228
+        externalTrafficPolicy: Local
+        ports:
+          smb:
+            port: *port
+            protocol: TCP
+
+    persistence:
+      # HDD NFS — 1 TB of backup space.
+      # Note: NFS does not support xattr, hence SMB_VFS_OBJECTS=fruit + SMB_METADATA=netatalk above.
+      data:
+        type: custom
+        volumeSpec:
+          nfs:
+            server: nfs.1337.pet
+            path: /export/hdd/timemachine
+        globalMounts:
+          - path: /opt/timemachine
+      # Samba runtime dir must be tmpfs.
+      samba-run:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 64Mi
+        globalMounts:
+          - path: /run/samba
+      tmp:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 128Mi
+        globalMounts:
+          - path: /tmp

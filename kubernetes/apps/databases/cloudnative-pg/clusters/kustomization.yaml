@@ -6,4 +6,5 @@ resources:
   - ./main-db-owner-secret.sops.yaml
   - ./main-db-pocketid-secret.sops.yaml
   - ./main-db-gatus-secret.sops.yaml
+  - ./main-db-paperless-secret.sops.yaml
   - ./main-db.yaml

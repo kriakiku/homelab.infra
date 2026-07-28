@@ -1,0 +1,70 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: restic-documents
+spec:
+  schedule: "30 3 * * *"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            egress: "true"
+        spec:
+          containers:
+            - name: restic
+              image: restic/restic:0.18.0
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -e
+                  mkdir -p /tmp/rclone
+                  echo "$RCLONE_CONFIG" | base64 -d > /tmp/rclone/rclone.conf
+                  export RCLONE_CONFIG=/tmp/rclone/rclone.conf
+                  restic -r rclone:gdrive:homelab-backups/documents backup /data --compression max
+                  restic -r rclone:gdrive:homelab-backups/documents forget --keep-daily 14 --keep-weekly 8 --keep-monthly 6
+                  restic -r rclone:gdrive:homelab-backups/documents prune
+              env:
+                - name: HOME
+                  value: /tmp
+                - name: RESTIC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: restic-backup-secret
+                      key: RESTIC_PASSWORD
+                - name: RCLONE_CONFIG
+                  valueFrom:
+                    secretKeyRef:
+                      name: restic-backup-secret
+                      key: RCLONE_CONFIG
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                capabilities:
+                  drop: [ALL]
+              resources:
+                requests:
+                  cpu: 50m
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: documents
+                  mountPath: /data
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: documents
+              nfs:
+                server: nfs.1337.pet
+                path: /export/hdd/documents
+            - name: tmp
+              emptyDir: {}
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000

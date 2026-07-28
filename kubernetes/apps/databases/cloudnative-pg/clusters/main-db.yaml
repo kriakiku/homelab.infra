@@ -32,6 +32,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-gatus-secret
+      - name: paperless
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-paperless-secret
 
   monitoring:
     enablePodMonitor: true

@@ -85,13 +85,6 @@ spec:
               limits:
                 memory: 256Mi
 
-    # Prefer the worker, but allow the control-plane when k8s-1 is memory-full.
-    defaultPodOptions:
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
-
     service:
       app:
         controller: timemachine

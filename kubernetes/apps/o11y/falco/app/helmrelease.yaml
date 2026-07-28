@@ -60,7 +60,7 @@ spec:
       limits:
         memory: 512Mi
 
-    # Allow scheduling on the control-plane when the worker is memory-full.
+    # DaemonSet: run on every node including control-plane (node security agent).
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
@@ -75,11 +75,6 @@ spec:
       enabled: true
 
       replicaCount: 1
-
-      tolerations:
-        - key: node-role.kubernetes.io/control-plane
-          operator: Exists
-          effect: NoSchedule
 
       resources:
         requests:

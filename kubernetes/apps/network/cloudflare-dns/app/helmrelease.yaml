@@ -42,5 +42,17 @@ spec:
       - 1337.pet
     serviceMonitor:
       enabled: true
+    # Light DNS controller — keep on control-plane (not worker capacity).
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: node-role.kubernetes.io/control-plane
+                  operator: Exists
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret

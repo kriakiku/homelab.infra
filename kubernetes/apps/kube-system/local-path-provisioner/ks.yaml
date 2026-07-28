@@ -8,7 +8,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/kube-system/local-path-provisioner/app
   prune: true
-  suspend: true
   sourceRef:
     kind: GitRepository
     name: flux-system

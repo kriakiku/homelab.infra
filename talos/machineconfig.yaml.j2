@@ -206,3 +206,17 @@ cluster:
   serviceAccount:
     key: {{ certs.k8sserviceaccount.key }}
 {% endif %}
+{% if machine.type == "worker" %}
+---
+# Local Path Provisioner data plane on the second disk (Proxmox scsi1 ~150GB),
+# not the OS disk (scsi0 / system_disk ~32GB). Mounted at /var/mnt/local-hostpath.
+# Volume label wiped by `just talos reset-node` via u-local-hostpath.
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: local-hostpath
+provisioning:
+  diskSelector:
+    match: "!system_disk"
+  minSize: 100GB
+  grow: true
+{% endif %}

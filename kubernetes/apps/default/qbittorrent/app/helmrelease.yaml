@@ -33,7 +33,10 @@ spec:
               - secretRef:
                   name: qbittorrent-secret
             securityContext:
-              allowPrivilegeEscalation: false
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
               capabilities:
                 add: [NET_ADMIN]
               readOnlyRootFilesystem: false

@@ -22,12 +22,15 @@ spec:
                 - -c
                 - |
                   set -e
-                  mkdir -p /root/.config/rclone
-                  echo "$RCLONE_CONFIG" | base64 -d > /root/.config/rclone/rclone.conf
+                  mkdir -p /tmp/rclone
+                  echo "$RCLONE_CONFIG" | base64 -d > /tmp/rclone/rclone.conf
+                  export RCLONE_CONFIG=/tmp/rclone/rclone.conf
                   restic -r rclone:gdrive:homelab-backups backup /data --compression max
                   restic -r rclone:gdrive:homelab-backups forget --keep-daily 7 --keep-weekly 4 --keep-monthly 3
                   restic -r rclone:gdrive:homelab-backups prune
               env:
+                - name: HOME
+                  value: /tmp
                 - name: RESTIC_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -51,11 +54,15 @@ spec:
               volumeMounts:
                 - name: s3-data
                   mountPath: /data
+                - name: tmp
+                  mountPath: /tmp
           volumes:
             - name: s3-data
               nfs:
                 server: nfs.1337.pet
                 path: /export/hdd/s3/eu-vno-1
+            - name: tmp
+              emptyDir: {}
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true

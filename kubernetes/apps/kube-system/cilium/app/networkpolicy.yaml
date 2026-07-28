@@ -135,12 +135,20 @@ spec:
         - ports:
             - port: "8333"
 
-    # ─── NFS (labeled pods only) ───
+    # ─── Storage VLAN: NFS + expanse S3/metrics ───
     - toCIDRSet:
         - cidr: 10.10.5.0/24
       toPorts:
         - ports:
             - port: "2049"
+              protocol: TCP
+            - port: "9000"
+              protocol: TCP
+            - port: "9002"
+              protocol: TCP
+            - port: "9100"
+              protocol: TCP
+            - port: "9633"
               protocol: TCP
 
     # ─── Internet (labeled pods only) ───

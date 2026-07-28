@@ -10,6 +10,13 @@ spec:
     name: drm-exporter
   interval: 1h
   values:
+    # Enable on a node only after Proxmox GPU passthrough exposes /dev/dri:
+    #   kubectl label node k8s-1 drm-exporter.enable=true
+    nodeSelector:
+      drm-exporter.enable: "true"
+    hostAccess:
+      devDri: /dev/dri
+      sys: /sys
     securityContext:
       capabilities:
         add:

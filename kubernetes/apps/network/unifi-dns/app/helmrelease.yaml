@@ -19,7 +19,10 @@ spec:
           tag: 0.10.9@sha256:30ae224e23bb7c303d72901a85aea77060288872716b8bc50589216c1f9d0df0
         env:
           - name: UNIFI_HOST
-            value: https://unifi.internal
+            # UniFi OS on UDR7; .internal names are not in CoreDNS yet
+            value: https://10.10.4.1
+          - name: UNIFI_SKIP_TLS_VERIFY
+            value: "true"
           - name: UNIFI_API_KEY
             valueFrom:
               secretKeyRef:

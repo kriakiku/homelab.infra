@@ -9,6 +9,11 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.2
+    - nolock
+    - hard
+    - tcp
   nfs:
     server: nfs.1337.pet
     path: /export/nvme/monitoring/alertmanager
@@ -23,6 +28,11 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.2
+    - nolock
+    - hard
+    - tcp
   nfs:
     server: nfs.1337.pet
     path: /export/nvme/monitoring/grafana
@@ -37,6 +47,11 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.2
+    - nolock
+    - hard
+    - tcp
   nfs:
     server: nfs.1337.pet
     path: /export/nvme/monitoring/victoria-logs

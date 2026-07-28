@@ -59,6 +59,30 @@ spec:
         serviceMonitorSelectorNilUsesHelmValues: false
         retention: 90d
         retentionSize: 50GB
+        securityContext:
+          # local-path + volume subPath leaves prometheus-db root-owned; non-root cannot write queries.active
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          fsGroup: 0
+        hostUsers: true
+        initContainers:
+          - name: fix-permissions
+            image: busybox:1.36
+            command:
+              - sh
+              - -c
+              - |
+                mkdir -p /prometheus/prometheus-db
+                chown -R 1000:1000 /prometheus
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+            volumeMounts:
+              - name: prometheus-kube-prometheus-stack-db
+                mountPath: /prometheus
+                # Must prepare prometheus-db before the main container mounts it via subPath
+                # (kubelet otherwise creates the subPath as root and prometheus cannot write).
         resources:
           requests:
             cpu: 100m

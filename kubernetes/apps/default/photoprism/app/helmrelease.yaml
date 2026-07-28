@@ -21,88 +21,44 @@ spec:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
-          # Wait for MariaDB to be ready before PhotoPrism starts.
-          wait-db:
+          init-db:
             image:
-              repository: docker.io/library/mariadb
-              tag: lts@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
+              repository: ghcr.io/cloudnative-pg/postgresql
+              tag: 18.1-system-trixie
             env:
-              MYSQL_PWD:
+              PGHOST: main-db-rw.databases.svc.cluster.local
+              PGPORT: "5432"
+              PGUSER: photoprism
+              PGPASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: photoprism-secret
-                    key: MARIADB_ROOT_PASSWORD
+                    key: PHOTOPRISM_DATABASE_PASSWORD
+              PGDATABASE: postgres
             command:
-              - /bin/sh
+              - /bin/bash
               - -ec
               - |
-                until mariadb -h 127.0.0.1 -u root -p"$MYSQL_PWD" -e "SELECT 1" >/dev/null 2>&1; do
-                  echo "Waiting for MariaDB..."; sleep 2
-                done
-                echo "MariaDB ready"
+                until pg_isready -q; do sleep 2; done
+                psql -v ON_ERROR_STOP=1 -d postgres <<'SQL'
+                SELECT 'CREATE DATABASE photoprism OWNER photoprism'
+                WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'photoprism')\gexec
+                SQL
             securityContext:
-              runAsUser: 999
-              runAsGroup: 999
+              runAsUser: 1000
+              runAsGroup: 1000
               runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: [ALL] }
-        containers:
-          # ── MariaDB sidecar ──────────────────────────────────────────────
-          # PhotoPrism only supports MySQL/MariaDB (not PostgreSQL).
-          mariadb:
-            image:
-              repository: docker.io/library/mariadb
-              tag: lts@sha256:628f228f0fd5913a220438693576b29b6fe4dc1fa0a1298c0e98579fae28635f
-            env:
-              MARIADB_DATABASE: photoprism
-              MARIADB_USER: photoprism
-              MARIADB_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: photoprism-secret
-                    key: MARIADB_PASSWORD
-              MARIADB_ROOT_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: photoprism-secret
-                    key: MARIADB_ROOT_PASSWORD
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command: [mariadb-admin, ping, -h, 127.0.0.1]
-                  periodSeconds: 30
-                  failureThreshold: 5
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command: [mariadb, -h, 127.0.0.1, -u, root, -e, "SELECT 1"]
-                  periodSeconds: 10
-                  failureThreshold: 5
-            securityContext:
-              runAsUser: 999
-              runAsGroup: 999
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
-              capabilities: { drop: [ALL] }
-            resources:
-              requests:
-                cpu: 50m
-                memory: 256Mi
-              limits:
-                memory: 1Gi
 
-          # ── PhotoPrism ───────────────────────────────────────────────────
+        containers:
           app:
             image:
+              # Preview build with PostgreSQL support (feature/postgresql).
+              # https://hub.docker.com/r/photoprism/photoprism/tags?name=postgres
               repository: docker.io/photoprism/photoprism
-              tag: latest@sha256:95864222022316a4372f2969151d18710a7533112b43a2b0da22f509f008fbac
+              tag: 260523-postgres@sha256:86171a4baf4bd8523478a0f3e93b03894a841d928d94879603b55ea8528ee134
             env:
               # Site
               PHOTOPRISM_SITE_URL: https://photoprism.1337.pet/
@@ -135,17 +91,16 @@ spec:
                     name: photoprism-oidc-credentials
                     key: client_secret
                     optional: true
-              # Database — MariaDB sidecar on localhost
-              PHOTOPRISM_DATABASE_DRIVER: mysql
-              PHOTOPRISM_DATABASE_SERVER: "127.0.0.1:3306"
+              # Database — shared CNPG main-db (PostgreSQL preview image)
+              PHOTOPRISM_DATABASE_DRIVER: postgres
+              PHOTOPRISM_DATABASE_SERVER: main-db-rw.databases.svc.cluster.local:5432
               PHOTOPRISM_DATABASE_NAME: photoprism
               PHOTOPRISM_DATABASE_USER: photoprism
               PHOTOPRISM_DATABASE_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: photoprism-secret
-                    key: PHOTOPRISM_DATABASE_PASSWORD
-              # Storage paths
+                    key: PHOTOPRISM_DATABASE_PASSWORD              # Storage paths
               PHOTOPRISM_ORIGINALS_PATH: /photos/originals
               PHOTOPRISM_IMPORT_PATH: /photos/import
               PHOTOPRISM_STORAGE_PATH: /storage
@@ -225,14 +180,6 @@ spec:
                 port: *port
 
     persistence:
-      # MariaDB data — local-path (fast queries); not PostgreSQL
-      db-data:
-        existingClaim: photoprism-db
-        advancedMounts:
-          photoprism:
-            mariadb:
-              - path: /var/lib/mysql
-
       # Cache / thumbnails / sidecar — NFS NVMe (regenerable; originals stay on HDD)
       storage:
         type: custom
@@ -269,7 +216,6 @@ spec:
             app:
               - path: /photos/import
 
-      # MariaDB and PhotoPrism both need /tmp
       tmp:
         type: emptyDir
         medium: Memory

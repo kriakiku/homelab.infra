@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - ./secret.sops.yaml
   - ./oidc.yaml
-  - ./pvc.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml

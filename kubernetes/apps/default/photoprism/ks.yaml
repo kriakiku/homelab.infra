@@ -5,10 +5,12 @@ kind: Kustomization
 metadata:
   name: photoprism
 spec:
-  # No kopiur: originals live on NFS HDD (source of truth from Google/iCloud).
-  # Cache/thumbs on NFS NVMe; MariaDB can be dumped separately later if needed.
+  # No kopiur: originals on NFS HDD are the Google/iCloud backup source of truth.
+  # Index DB lives in shared CNPG main-db (backed up via Barman → SeaweedFS).
   dependsOn:
     - name: pocket-id
+    - name: cloudnative-pg-clusters
+      namespace: databases
   interval: 1h
   path: ./kubernetes/apps/default/photoprism/app
   prune: true

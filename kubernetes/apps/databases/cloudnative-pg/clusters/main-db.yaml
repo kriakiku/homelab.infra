@@ -39,7 +39,7 @@ spec:
   backup:
     barmanObjectStore:
       destinationPath: s3://cnpg-backups/
-      endpointURL: http://seaweedfs.databases.svc.cluster.local:8333
+      endpointURL: http://seaweedfs.storage.svc.cluster.local:8333
       s3Credentials:
         accessKeyId:
           name: seaweedfs-s3-secret

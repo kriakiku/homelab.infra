@@ -46,7 +46,7 @@ spec:
             - port: "53"
               protocol: TCP
 
-    # ─── Intra-cluster: all namespaces ───
+    # ─── Intra-cluster: all app namespaces ───
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
@@ -76,6 +76,15 @@ spec:
             io.kubernetes.pod.namespace: databases
     - toEndpoints:
         - matchLabels:
+            io.kubernetes.pod.namespace: storage
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: backup
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: media
+    - toEndpoints:
+        - matchLabels:
             io.kubernetes.pod.namespace: default
 
     # ─── pocket-id → smtp-relay :25 ───
@@ -87,16 +96,16 @@ spec:
         - ports:
             - port: "25"
 
-    # ─── pocket-id → seaweedfs (S3) :8333 ───
+    # ─── Apps → seaweedfs (S3) :8333 ───
     - toServices:
         - k8sService:
             serviceName: seaweedfs
-            namespace: databases
+            namespace: storage
       toPorts:
         - ports:
             - port: "8333"
 
-    # ─── pocket-id / gatus-sidecar → main-db (PostgreSQL) :5432 ───
+    # ─── Apps → main-db (PostgreSQL) :5432 ───
     - toServices:
         - k8sService:
             serviceName: main-db-rw
@@ -106,11 +115,11 @@ spec:
             - port: "5432"
               protocol: TCP
 
-    # ─── qui → qbittorrent (API) :80 ───
+    # ─── qui / brrpolice → qbittorrent :80 ───
     - toServices:
         - k8sService:
             serviceName: qbittorrent
-            namespace: default
+            namespace: media
       toPorts:
         - ports:
             - port: "80"
@@ -126,14 +135,13 @@ spec:
             - port: "1411"
               protocol: TCP
 
-    # ─── CNPG main-db → seaweedfs (backups) :8333 ───
-    - toServices:
-        - k8sService:
-            serviceName: seaweedfs
-            namespace: databases
+    # ─── UniFi DNS webhook → UDR API :443 ───
+    - toCIDRSet:
+        - cidr: 10.10.4.1/32
       toPorts:
         - ports:
-            - port: "8333"
+            - port: "443"
+              protocol: TCP
 
     # ─── Storage VLAN: NFS + expanse S3/metrics ───
     - toCIDRSet:

@@ -18,8 +18,6 @@ spec:
         TZ: America/New_York
       envFrom:
         - secretRef:
-            name: main-db-gatus-secret
-        - secretRef:
             name: "{{ .Release.Name }}-secret"
     sidecar:
       kinds:

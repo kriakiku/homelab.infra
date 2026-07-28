@@ -27,17 +27,12 @@ spec:
               FILE_BACKEND: s3
               S3_BUCKET: pocket-id
               S3_REGION: us-east-1
-              S3_ENDPOINT: http://seaweedfs.databases.svc.cluster.local:8333
+              S3_ENDPOINT: http://seaweedfs.storage.svc.cluster.local:8333
               S3_FORCE_PATH_STYLE: "true"
               SMTP_HOST: smtp-relay.default.svc.cluster.local
               SMTP_PORT: "25"
               SMTP_FROM: auth@kriakiku.dev
               SMTP_TLS: none
-              DB_CONNECTION_STRING:
-                valueFrom:
-                  secretKeyRef:
-                    name: main-db-pocketid-secret
-                    key: uri
             envFrom:
               - secretRef:
                   name: pocket-id-secret

@@ -2,12 +2,15 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: databases
+namespace: media
 
 components:
   - ../../components/alerts
-  - ../../components/seaweedfs/s3-secret
+  - ../../components/kopiur/secret
+  - ../../components/nfs-media
 
 resources:
   - ./namespace.yaml
-  - ./cloudnative-pg/ks.yaml
+  - ./brrpolice/ks.yaml
+  - ./qbittorrent/ks.yaml
+  - ./qui/ks.yaml

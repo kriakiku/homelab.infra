@@ -23,6 +23,8 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg
+    - name: seaweedfs
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/databases/cloudnative-pg/clusters
   prune: true

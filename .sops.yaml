@@ -5,3 +5,5 @@ creation_rules:
     encrypted_regex: ^(data|stringData)$
     mac_only_encrypted: true
     age: age14mr55ap6mywdf7gp0nzfgtfttscpkmzegq79xhq0eqz3s3pn4sjq5gtyuj
+  - path_regex: talos/secrets\.sops\.ya?ml$
+    age: age14mr55ap6mywdf7gp0nzfgtfttscpkmzegq79xhq0eqz3s3pn4sjq5gtyuj

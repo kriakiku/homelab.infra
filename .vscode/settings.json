@@ -14,6 +14,7 @@
     "**/*.json5": "json5"
   },
   "files.trimTrailingWhitespace": true,
+  "sops.defaults.ageKeyFile": "age.key",
   "material-icon-theme.files.associations": {
     "*.gotmpl": "smarty",
     "helmfile.yaml": "helm",

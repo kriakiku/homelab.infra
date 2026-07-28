@@ -31,10 +31,12 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 ### 1. Generate Talos secrets
 
 ```bash
-talosctl gen secrets -o talos/secrets.yaml
+just generate-secrets
 ```
 
-Fill in `talos/machineconfig.yaml.j2` with generated keys, or adjust the config to load from `secrets.yaml`.
+This creates `talos/secrets.sops.yaml`, encrypted with the repository age key.
+`just render-node` decrypts it to a temporary file while rendering the machine
+configuration.
 
 ### 2. Create cluster schematic
 

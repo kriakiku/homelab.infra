@@ -6,10 +6,14 @@ talos schematic-id:
     @echo "ISO: https://factory.talos.dev/image/434f313f73662fa228468d2f78510cdf5034ee6c93478230089cf27f5e79509e/v1.13.7/metal-amd64.iso"
 
 generate-secrets:
-    talosctl gen secrets -o talos/secrets.yaml
+    talosctl gen secrets -o /tmp/talos-secrets.yaml
+    SOPS_AGE_KEY_FILE=age.key sops --encrypt /tmp/talos-secrets.yaml > talos/secrets.sops.yaml
+    rm /tmp/talos-secrets.yaml
 
 render-node node:
-    minijinja-cli talos/machineconfig.yaml.j2 talos/secrets.yaml talos/nodes/{{node}}.yaml > /tmp/talos-{{node}}.yaml
+    SOPS_AGE_KEY_FILE=age.key sops --decrypt talos/secrets.sops.yaml > /tmp/talos-secrets.yaml
+    minijinja-cli talos/machineconfig.yaml.j2 /tmp/talos-secrets.yaml talos/nodes/{{node}}.yaml > /tmp/talos-{{node}}.yaml
+    rm /tmp/talos-secrets.yaml
     cat talos/nodes/{{node}}-hostname.yaml >> /tmp/talos-{{node}}.yaml
     @echo "Config written to /tmp/talos-{{node}}.yaml"
 

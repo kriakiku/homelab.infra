@@ -1,0 +1,27 @@
+---
+# PVCs (CNPG, Prometheus, kopiur, …) must land on k8s-1's second disk
+# (/var/mnt/local-hostpath from Talos UserVolumeConfig), never on the
+# 32GB OS disk or on the control-plane.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: local-path-config
+  namespace: local-path-storage
+data:
+  config.json: |-
+    {
+      "nodePathMap": [
+        {
+          "node": "k8s-1",
+          "paths": ["/var/mnt/local-hostpath"]
+        },
+        {
+          "node": "k8s-0",
+          "paths": []
+        },
+        {
+          "node": "DEFAULT_PATH_FOR_NON_LISTED_NODES",
+          "paths": []
+        }
+      ]
+    }

@@ -84,13 +84,11 @@ spec:
                   secretKeyRef:
                     name: photoprism-oidc-credentials
                     key: client_id
-                    optional: true
               PHOTOPRISM_OIDC_SECRET:
                 valueFrom:
                   secretKeyRef:
                     name: photoprism-oidc-credentials
                     key: client_secret
-                    optional: true
               # Database — shared CNPG main-db (PostgreSQL preview image)
               PHOTOPRISM_DATABASE_DRIVER: postgres
               PHOTOPRISM_DATABASE_SERVER: main-db-rw.databases.svc.cluster.local:5432

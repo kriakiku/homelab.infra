@@ -2,6 +2,13 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# Rancher does not publish a working Helm chart for local-path-provisioner
+# (charts.rancher.io / rancher.github.io both fail). Manage via upstream
+# manifests + ConfigMap patch for nodePathMap.
 resources:
-  - ./helmrepository.yaml
-  - ./helmrelease.yaml
+  - https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.36/deploy/local-path-storage.yaml
+patches:
+  - path: config-patch.yaml
+    target:
+      kind: ConfigMap
+      name: local-path-config

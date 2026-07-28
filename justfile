@@ -28,6 +28,8 @@ bootstrap cluster:
     kubectl apply -k kubernetes/flux/cluster/
 
 # Create the SOPS age decryption secret used by Flux (reads ./age.key)
+# Flux resolves decryption.secretRef in each Kustomization's own namespace, so
+# the sops-age secret is replicated into every app namespace.
 sops-secret:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -37,9 +39,24 @@ sops-secret:
         exit 1
     fi
 
-    kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
-    kubectl -n flux-system create secret generic sops-age \
-      --from-file=age.agekey=age.key \
-      --dry-run=client -o yaml | kubectl apply -f -
+    namespaces=(
+        actions-runner-system
+        cert-manager
+        databases
+        default
+        flux-system
+        kopiur-system
+        kube-system
+        network
+        o11y
+        system-upgrade
+    )
 
-    echo "sops-age secret created successfully"
+    for ns in "${namespaces[@]}"; do
+        kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
+        kubectl -n "$ns" create secret generic sops-age \
+          --from-file=age.agekey=age.key \
+          --dry-run=client -o yaml | kubectl apply -f -
+    done
+
+    echo "sops-age secret created in all namespaces"

@@ -12,6 +12,7 @@ resources:
   - ./namespace.yaml
   - ./atuin/ks.yaml
   - ./homer/ks.yaml
+  - ./kestra/ks.yaml
   - ./linkwarden/ks.yaml
   - ./mailarchiver/ks.yaml
   - ./penpot/ks.yaml

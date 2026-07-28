@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kestra
+spec:
+  chart:
+    spec:
+      chart: kestra
+      version: "1.3.29"
+      sourceRef:
+        kind: HelmRepository
+        name: kestra
+  interval: 1h
+  values:
+    image:
+      repository: kestra/kestra
+      tag: v1.3.29
+
+    # Standalone mode — all components in one pod (suitable for homelab).
+    deployments:
+      standalone:
+        enabled: true
+        # Allow internet egress so the DinD sidecar can pull Bun (oven/bun) and
+        # other script container images from Docker Hub.
+        podLabels:
+          egress: "true"
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            memory: 4Gi
+      webserver:
+        enabled: false
+      executor:
+        enabled: false
+      indexer:
+        enabled: false
+      scheduler:
+        enabled: false
+      worker:
+        enabled: false
+
+    # Docker-in-Docker sidecar — enables Docker task runner for script tasks.
+    # Bun scripts use containerImage: oven/bun in their task definition.
+    dind:
+      enabled: true
+      mode: rootless
+
+    configurations:
+      application:
+        kestra:
+          queue:
+            type: postgres
+          repository:
+            type: postgres
+          server:
+            # No built-in auth — oauth2-proxy handles authentication.
+            basic-auth:
+              enabled: false
+
+        # Micronaut HTTP server: trust X-Forwarded-* from Envoy/oauth2-proxy.
+        micronaut:
+          server:
+            cors:
+              enabled: false
+          security:
+            enabled: false
+
+      # Mount credentials YAML (DB + S3) from SOPS-encrypted Kubernetes secret.
+      secrets:
+        - name: kestra-credentials
+          key: credentials.yml
+
+    # Plugin defaults — set Docker as the default task runner for all script tasks.
+    # Users can override per-task: set containerImage: oven/bun for Bun execution.
+    pluginDefaults:
+      - type: io.kestra.plugin.scripts
+        forced: false
+        values:
+          taskRunner:
+            type: io.kestra.plugin.scripts.runner.docker.Docker
+
+    # No built-in Ingress — HTTPRoute managed by oauth2-proxy deployment.
+    ingress:
+      enabled: false
+
+    serviceAccount:
+      create: true
+      annotations: {}
+
+    # RBAC for the worker to manage pods/jobs (Kubernetes task runner).
+    rbac:
+      enabled: true

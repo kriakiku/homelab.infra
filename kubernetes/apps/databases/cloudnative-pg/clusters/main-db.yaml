@@ -62,6 +62,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-penpot-secret
+      - name: kestra
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-kestra-secret
 
   monitoring:
     enablePodMonitor: true

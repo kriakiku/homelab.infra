@@ -1,0 +1,124 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kestra-proxy
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: kestra-proxy
+  interval: 1h
+  values:
+    controllers:
+      kestra-proxy:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.15.3@sha256:10a1165743a192e1940b4708fb9647027185ce11a681a1c5519b442ff7f1f561
+            env:
+              OAUTH2_PROXY_PROVIDER: oidc
+              OAUTH2_PROXY_OIDC_ISSUER_URL: https://auth.1337.pet
+              OAUTH2_PROXY_REDIRECT_URL: https://kestra.1337.pet/oauth2/callback
+              OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+              # Kestra standalone service created by the Helm chart.
+              OAUTH2_PROXY_UPSTREAMS: http://kestra:8080
+              OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+              OAUTH2_PROXY_SCOPE: "openid email profile"
+              OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+              OAUTH2_PROXY_COOKIE_SECURE: "true"
+              OAUTH2_PROXY_REVERSE_PROXY: "true"
+              OAUTH2_PROXY_PASS_USER_HEADERS: "true"
+              OAUTH2_PROXY_SET_XAUTHREQUEST: "true"
+              OAUTH2_PROXY_SILENCE_PING_LOGGING: "true"
+              # Allow websocket connections (log streaming, live execution view).
+              OAUTH2_PROXY_PASS_HOST_HEADER: "true"
+              # Skip auth for API calls with Bearer token (CI/external integrations).
+              OAUTH2_PROXY_SKIP_AUTH_REGEX: "^/api/v1/executions/webhook/.*"
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: kestra-oidc-credentials
+                    key: client_id
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kestra-oidc-credentials
+                    key: client_secret
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: kestra-proxy-secret
+                    key: OAUTH2_PROXY_COOKIE_SECRET
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 4180
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ALL] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+
+    service:
+      app:
+        controller: kestra-proxy
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          item.homer.rajsingh.info/name: "Kestra"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kestra.png"
+          item.homer.rajsingh.info/subtitle: "Workflow Orchestration"
+          service.homer.rajsingh.info/name: "Automation"
+          service.homer.rajsingh.info/icon: "fa-solid fa-diagram-project"
+        hostnames:
+          - kestra.1337.pet
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port

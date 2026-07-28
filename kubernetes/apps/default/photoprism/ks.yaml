@@ -11,6 +11,8 @@ spec:
     - name: pocket-id
     - name: cloudnative-pg-clusters
       namespace: databases
+    - name: nfs-mkdir
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/default/photoprism/app
   prune: true

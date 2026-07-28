@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: seaweedfs
 spec:
+  dependsOn:
+    - name: nfs-mkdir
   interval: 1h
   path: ./kubernetes/apps/storage/seaweedfs/app
   prune: true

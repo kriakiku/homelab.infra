@@ -25,6 +25,9 @@ spec:
     - name: grafana-operator
     - name: pocket-id
       namespace: default
+    - name: nfs-mkdir
+      namespace: storage
+    - name: o11y-storage
   interval: 1h
   path: ./kubernetes/apps/o11y/grafana-operator/instance
   prune: true

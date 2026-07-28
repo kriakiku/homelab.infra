@@ -1,0 +1,37 @@
+---
+# Desired NFS directories under nfs.1337.pet:/export/{hdd,nvme}.
+# Format (whitespace-separated): <root>/<relative/path> <uid> <gid> [mode]
+# root is "hdd" or "nvme". Lines starting with # are ignored.
+#
+# Add a line here whenever an app mounts a new NFS path — no SSH to the NAS.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfs-mkdir-paths
+data:
+  paths: |
+    # ── PhotoPrism ──────────────────────────────────────────────
+    hdd/photos/originals 1000 1000 0755
+    hdd/photos/import 1000 1000 0755
+    nvme/photos/storage 1000 1000 0755
+
+    # ── Paperless ───────────────────────────────────────────────
+    nvme/paperless/data 1000 1000 0755
+    nvme/paperless/tessdata 1000 1000 0755
+    hdd/documents/paperless/media 1000 1000 0755
+    hdd/documents/paperless/consume 1000 1000 0755
+    hdd/documents/paperless/export 1000 1000 0755
+    hdd/documents/paperless/trash 1000 1000 0755
+
+    # ── Media / Time Machine / S3 ───────────────────────────────
+    hdd/media 1000 1000 0755
+    hdd/timemachine 1000 1000 0755
+    hdd/s3/eu-vno-1 1000 1000 0755
+
+    # ── Documents root (restic-documents) ───────────────────────
+    hdd/documents 1000 1000 0755
+
+    # ── Observability (static NFS PVs) ──────────────────────────
+    nvme/monitoring/grafana 1000 1000 0755
+    nvme/monitoring/victoria-logs 1000 1000 0755
+    nvme/monitoring/alertmanager 1000 1000 0755

@@ -50,6 +50,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-vaultwarden-secret
+      - name: mailarchiver
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-mailarchiver-secret
 
   monitoring:
     enablePodMonitor: true

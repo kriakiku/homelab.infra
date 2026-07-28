@@ -1,0 +1,175 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mailarchiver
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: mailarchiver
+  interval: 1h
+  values:
+    controllers:
+      mailarchiver:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/cloudnative-pg/postgresql
+              tag: 18.1-system-trixie
+            env:
+              PGHOST: main-db-rw.databases.svc.cluster.local
+              PGPORT: "5432"
+              PGUSER: mailarchiver
+              PGPASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: mailarchiver-secret
+                    key: DB_PASSWORD
+              PGDATABASE: postgres
+            command:
+              - /bin/bash
+              - -ec
+              - |
+                until pg_isready -q; do sleep 2; done
+                psql -v ON_ERROR_STOP=1 -d postgres <<'SQL'
+                SELECT 'CREATE DATABASE mailarchiver OWNER mailarchiver'
+                WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'mailarchiver')\gexec
+                SQL
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: [ALL] }
+        containers:
+          app:
+            image:
+              repository: docker.io/s1t5/mailarchiver
+              tag: 2607.4@sha256:4c08167d5c59dcec33833a7a43b69cf8ce5782f64c5331728f888fa863d8f3f0
+            env:
+              # Database — Npgsql connection string format
+              ConnectionStrings__DefaultConnection:
+                valueFrom:
+                  secretKeyRef:
+                    name: mailarchiver-secret
+                    key: DB_CONNECTION_STRING
+              # Local bootstrap admin (used until first OIDC login as admin)
+              Authentication__Username: admin
+              Authentication__Password:
+                valueFrom:
+                  secretKeyRef:
+                    name: mailarchiver-secret
+                    key: ADMIN_PASSWORD
+              Authentication__SessionTimeoutMinutes: "1440"
+              Authentication__CookieSameSite: Lax
+              # OIDC
+              OAuth__Enabled: "true"
+              OAuth__Authority: https://auth.1337.pet
+              OAuth__ClientId:
+                valueFrom:
+                  secretKeyRef:
+                    name: mailarchiver-oidc-credentials
+                    key: client_id
+              OAuth__ClientSecret:
+                valueFrom:
+                  secretKeyRef:
+                    name: mailarchiver-oidc-credentials
+                    key: client_secret
+              OAuth__DisplayName: Pocket ID
+              OAuth__ClientScopes__0: openid
+              OAuth__ClientScopes__1: profile
+              OAuth__ClientScopes__2: email
+              OAuth__AutoApproveUsers: "false"
+              OAuth__DisablePasswordLogin: "false"
+              # Tell ASP.NET to trust X-Forwarded-* from Envoy
+              ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+              DOTNET_RUNNING_IN_CONTAINER: "true"
+              TZ: Europe/Vilnius
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 5000
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  failureThreshold: 60
+                  periodSeconds: 5
+            # Image runs as root (dotnet)
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+                add: [CHOWN, FOWNER, SETUID, SETGID, DAC_OVERRIDE]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+    service:
+      app:
+        controller: mailarchiver
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames:
+          - mailarchiver.1337.pet
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    persistence:
+      # ASP.NET DataProtection key ring — must survive pod restarts
+      dp-keys:
+        existingClaim: mailarchiver-keys
+        globalMounts:
+          - path: /app/DataProtection-Keys
+      # Local import folder (optional EML drop)
+      imports:
+        type: emptyDir
+        sizeLimit: 2Gi
+        globalMounts:
+          - path: /app/imports
+      tmp:
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 512Mi
+        globalMounts:
+          - path: /tmp

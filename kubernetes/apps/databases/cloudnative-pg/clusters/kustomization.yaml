@@ -9,4 +9,5 @@ resources:
   - ./main-db-paperless-secret.sops.yaml
   - ./main-db-linkwarden-secret.sops.yaml
   - ./main-db-vaultwarden-secret.sops.yaml
+  - ./main-db-mailarchiver-secret.sops.yaml
   - ./main-db.yaml

@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidusergroup_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDUserGroup
+metadata:
+  name: mailarchiver
+spec:
+  friendlyName: MailArchiver
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidoidcclient_v1alpha1.json
+apiVersion: pocketid.internal/v1alpha1
+kind: PocketIDOIDCClient
+metadata:
+  name: mailarchiver
+spec:
+  name: MailArchiver
+  clientID: mailarchiver
+  pkceEnabled: true
+  skipConsent: true
+  callbackUrls:
+    - https://mailarchiver.1337.pet/oidc-signin-completed
+  logo:
+    nameOverride: mailarchiver
+  allowedUserGroups:
+    - name: mailarchiver
+  secret:
+    name: mailarchiver-oidc-credentials
+    keys:
+      clientID: client_id
+      clientSecret: client_secret
+      issuerUrl: issuer_url
+      discoveryUrl: discovery_url

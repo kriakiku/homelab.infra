@@ -1,0 +1,13 @@
+---
+# Small NVMe PVC for ASP.NET DataProtection key ring.
+# Keys are tiny (~KB) but must survive pod restarts.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mailarchiver-keys
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: local-path

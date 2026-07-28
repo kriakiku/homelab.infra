@@ -88,6 +88,13 @@ spec:
               persistentVolumeClaim:
                 claimName: grafana-nvme
   httpRoute:
+    metadata:
+      annotations:
+        item.homer.rajsingh.info/name: "Grafana"
+        item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png"
+        item.homer.rajsingh.info/subtitle: "Dashboards & Metrics"
+        service.homer.rajsingh.info/name: "Observability"
+        service.homer.rajsingh.info/icon: "fa-solid fa-chart-line"
     spec:
       hostnames:
         - grafana.1337.pet

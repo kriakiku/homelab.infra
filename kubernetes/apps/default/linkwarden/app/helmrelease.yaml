@@ -182,6 +182,12 @@ spec:
 
     route:
       app:
+        annotations:
+          item.homer.rajsingh.info/name: "Linkwarden"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png"
+          item.homer.rajsingh.info/subtitle: "Bookmark Manager"
+          service.homer.rajsingh.info/name: "Personal"
+          service.homer.rajsingh.info/icon: "fa-solid fa-bookmark"
         hostnames:
           - linkwarden.1337.pet
         parentRefs:

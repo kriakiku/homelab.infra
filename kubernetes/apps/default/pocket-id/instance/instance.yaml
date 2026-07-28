@@ -54,6 +54,14 @@ spec:
     parentRefs:
       - name: envoy-external
         namespace: network
+    template:
+      metadata:
+        annotations:
+          item.homer.rajsingh.info/name: "Pocket ID"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pocket-id.png"
+          item.homer.rajsingh.info/subtitle: "Identity Provider / SSO"
+          service.homer.rajsingh.info/name: "Security"
+          service.homer.rajsingh.info/icon: "fa-solid fa-shield-halved"
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000

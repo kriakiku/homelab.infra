@@ -1,0 +1,21 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homer-operator
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: homer-operator
+  interval: 1h
+  values:
+    operator:
+      # Enable Gateway API (HTTPRoute) discovery in addition to Ingress.
+      enableGatewayAPI: true
+      reconcileInterval: "60s"
+      metrics:
+        enabled: true
+    homer:
+      image:
+        repository: ghcr.io/bastienwirtz/homer
+        tag: latest

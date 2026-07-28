@@ -1,0 +1,194 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rajsinghtech/homer-operator/main/config/crd/bases/homer.rajsingh.info_dashboards.yaml
+apiVersion: homer.rajsingh.info/v1alpha1
+kind: Dashboard
+metadata:
+  name: homer
+spec:
+  replicas: 1
+  serviceSelector:
+    matchLabels: {}
+  homerConfig:
+    title: "1337.pet"
+    subtitle: "Home Operations"
+    theme: default
+    header: true
+    footer: '<p>Managed by Flux + Kubernetes</p>'
+    logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homer.png"
+    defaults:
+      layout: columns
+      colorTheme: auto
+
+    colors:
+      light:
+        highlight-primary: "#3367d6"
+        highlight-secondary: "#4f8ef7"
+        highlight-hover: "#5a95f5"
+        background: "#f5f5f5"
+        card-background: "#ffffff"
+        text: "#363636"
+        text-header: "#424242"
+        text-title: "#303030"
+        text-subtitle: "#424242"
+        card-shadow: rgba(0, 0, 0, 0.12)
+        link: "#3273dc"
+        link-hover: "#363636"
+      dark:
+        highlight-primary: "#3367d6"
+        highlight-secondary: "#4f8ef7"
+        highlight-hover: "#5a95f5"
+        background: "#131313"
+        card-background: "#2b2b2b"
+        text: "#eaeaea"
+        text-header: "#ffffff"
+        text-title: "#fafafa"
+        text-subtitle: "#f5f5f5"
+        card-shadow: rgba(0, 0, 0, 0.4)
+        link: "#3273dc"
+        link-hover: "#ffdd57"
+
+    links:
+      - name: "GitHub"
+        icon: "fab fa-github"
+        url: "https://github.com/kriakiku/homelab.infra"
+        target: "_blank"
+
+    services:
+      - parameters:
+          name: Security
+          icon: fa-solid fa-shield-halved
+        items:
+          - parameters:
+              name: Pocket ID
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/pocket-id.png"
+              subtitle: "Identity Provider / SSO"
+              tag: auth
+              url: "https://auth.1337.pet"
+              target: _blank
+          - parameters:
+              name: Vaultwarden
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/vaultwarden.png"
+              subtitle: "Password Manager"
+              tag: passwords
+              url: "https://vaultwarden.1337.pet"
+              target: _blank
+
+      - parameters:
+          name: Personal
+          icon: fa-solid fa-user
+        items:
+          - parameters:
+              name: Linkwarden
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/linkwarden.png"
+              subtitle: "Bookmark Manager"
+              tag: bookmarks
+              url: "https://linkwarden.1337.pet"
+              target: _blank
+          - parameters:
+              name: Wallos
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/wallos.png"
+              subtitle: "Subscription Tracker"
+              tag: finance
+              url: "https://wallos.1337.pet"
+              target: _blank
+          - parameters:
+              name: Paperless
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperlessngx.png"
+              subtitle: "Document Archive"
+              tag: documents
+              url: "https://paperless.1337.pet"
+              target: _blank
+          - parameters:
+              name: MailArchiver
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/mailarchiver.png"
+              subtitle: "Email Archive"
+              tag: email
+              url: "https://mailarchiver.1337.pet"
+              target: _blank
+
+      - parameters:
+          name: Media & Downloads
+          icon: fa-solid fa-film
+        items:
+          - parameters:
+              name: Qui
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/autobrr.png"
+              subtitle: "Download Manager"
+              tag: downloads
+              url: "https://qui.1337.pet"
+              target: _blank
+          - parameters:
+              name: qBittorrent
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/qbittorrent.png"
+              subtitle: "Torrent Client (VPN)"
+              tag: downloads
+              url: "http://qui.1337.pet"
+              target: _blank
+
+      - parameters:
+          name: Observability
+          icon: fa-solid fa-chart-line
+        items:
+          - parameters:
+              name: Grafana
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png"
+              subtitle: "Dashboards & Metrics"
+              tag: monitoring
+              url: "https://grafana.1337.pet"
+              target: _blank
+              type: Grafana
+          - parameters:
+              name: Prometheus
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png"
+              subtitle: "Metrics"
+              tag: monitoring
+              url: "https://prometheus.1337.pet"
+              target: _blank
+              type: Prometheus
+          - parameters:
+              name: Alertmanager
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/alertmanager.png"
+              subtitle: "Alerts"
+              tag: monitoring
+              url: "https://alertmanager.1337.pet"
+              target: _blank
+          - parameters:
+              name: Victoria Logs
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/victoriametrics.png"
+              subtitle: "Log Storage"
+              tag: logs
+              url: "https://vlogs.1337.pet"
+              target: _blank
+          - parameters:
+              name: Status
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png"
+              subtitle: "Service Health"
+              tag: status
+              url: "https://status.1337.pet"
+              target: _blank
+
+      - parameters:
+          name: Infrastructure
+          icon: fa-solid fa-server
+        items:
+          - parameters:
+              name: Flux
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/flux.png"
+              subtitle: "GitOps Controller"
+              tag: gitops
+              url: "https://flux-operator.1337.pet"
+              target: _blank
+          - parameters:
+              name: Atuin
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/atuin.png"
+              subtitle: "Shell History Sync"
+              tag: dev
+              url: "https://atuin.1337.pet"
+              target: _blank
+          - parameters:
+              name: Time Machine
+              logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/apple.png"
+              subtitle: "smb://10.10.4.228/TimeMachine"
+              tag: backup
+              url: "smb://10.10.4.228/TimeMachine"
+              target: _blank

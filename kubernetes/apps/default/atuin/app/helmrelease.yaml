@@ -70,6 +70,12 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          item.homer.rajsingh.info/name: "Atuin"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/atuin.png"
+          item.homer.rajsingh.info/subtitle: "Shell History Sync"
+          service.homer.rajsingh.info/name: "Infrastructure"
+          service.homer.rajsingh.info/icon: "fa-solid fa-terminal"
         hostnames:
           - "{{ .Release.Name }}.1337.pet"
         parentRefs:

@@ -312,6 +312,12 @@ spec:
 
     route:
       app:
+        annotations:
+          item.homer.rajsingh.info/name: "Paperless"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/paperlessngx.png"
+          item.homer.rajsingh.info/subtitle: "Document Archive"
+          service.homer.rajsingh.info/name: "Personal"
+          service.homer.rajsingh.info/icon: "fa-solid fa-file-alt"
         hostnames:
           - paperless.1337.pet
         parentRefs:

@@ -145,6 +145,12 @@ spec:
 
     route:
       app:
+        annotations:
+          item.homer.rajsingh.info/name: "MailArchiver"
+          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/mailarchiver.png"
+          item.homer.rajsingh.info/subtitle: "Email Archive"
+          service.homer.rajsingh.info/name: "Personal"
+          service.homer.rajsingh.info/icon: "fa-solid fa-envelope"
         hostnames:
           - mailarchiver.1337.pet
         parentRefs:

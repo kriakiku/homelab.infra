@@ -112,7 +112,13 @@ machine:
     sunrpc.tcp_max_slot_table_entries: "128"
     sunrpc.tcp_slot_table_entries: "128"
     user.max_user_namespaces: "11255"
+{% if machine.type == "worker" %}
+    # 2Gi hugepages for worker workloads (kata/GPU). Never on control-plane:
+    # on a 4Gi CP this alone leaves almost nothing allocatable.
     vm.nr_hugepages: "1024"
+{% else %}
+    vm.nr_hugepages: "0"
+{% endif %}
   time:
     servers:
       - time.cloudflare.com

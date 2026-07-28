@@ -233,13 +233,13 @@ spec:
             mariadb:
               - path: /var/lib/mysql
 
-      # Cache / thumbnails / sidecar — HDD NFS (regenerable; originals are the backup)
+      # Cache / thumbnails / sidecar — NFS NVMe (regenerable; originals stay on HDD)
       storage:
         type: custom
         volumeSpec:
           nfs:
             server: nfs.1337.pet
-            path: /export/hdd/photos/storage
+            path: /export/nvme/photos/storage
         advancedMounts:
           photoprism:
             app:

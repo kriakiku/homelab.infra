@@ -1,6 +1,6 @@
 ---
 # MariaDB data — keep local (fast queries). PhotoPrism does not support PostgreSQL.
-# Originals/import/storage live on NFS HDD; only this DB needs a local volume.
+# Originals/import on NFS HDD; cache/thumbs on NFS NVMe; only this DB needs a local volume.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

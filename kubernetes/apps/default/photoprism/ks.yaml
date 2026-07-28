@@ -6,7 +6,7 @@ metadata:
   name: photoprism
 spec:
   # No kopiur: originals live on NFS HDD (source of truth from Google/iCloud).
-  # MariaDB can be dumped separately later if needed; regenerable cache is not backed up.
+  # Cache/thumbs on NFS NVMe; MariaDB can be dumped separately later if needed.
   dependsOn:
     - name: pocket-id
   interval: 1h

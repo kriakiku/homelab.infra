@@ -99,7 +99,8 @@ spec:
         # ── Prometheus output (event counters by rule/priority) ──────────
         prometheus:
           enabled: true
-          extralabels: "rule,priority,source,namespace"
+          # Do not duplicate built-in labels (rule/priority/source) — that panics falcosidekick.
+          extralabels: "cluster"
 
         # ── Victoria Logs via Loki-compatible ingest API ─────────────────
         # VictoriaLogs supports /insert/loki/api/v1/push.
@@ -122,7 +123,8 @@ spec:
           endpoint: "/api/v2/alerts"
           minimumpriority: "error"
           checkcert: false
-          expireafter: "30m"
+          # Seconds (int), not a Go duration string.
+          expireafter: "1800"
 
       # ── Falcosidekick WebUI ─────────────────────────────────────────────
       # Visual event timeline, exposed on envoy-internal.

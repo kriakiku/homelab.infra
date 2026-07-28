@@ -11,6 +11,8 @@ components:
 resources:
   - ./namespace.yaml
   - ./atuin/ks.yaml
+  - ./linkwarden/ks.yaml
   - ./paperless/ks.yaml
   - ./pocket-id/ks.yaml
   - ./smtp-relay/ks.yaml
+  - ./vaultwarden/ks.yaml

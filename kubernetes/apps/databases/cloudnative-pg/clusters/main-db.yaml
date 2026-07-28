@@ -38,6 +38,18 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-paperless-secret
+      - name: linkwarden
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-linkwarden-secret
+      - name: vaultwarden
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-vaultwarden-secret
 
   monitoring:
     enablePodMonitor: true

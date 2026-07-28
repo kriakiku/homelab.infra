@@ -17,10 +17,11 @@ spec:
           app:
             image:
               repository: ghcr.io/pocket-id/pocket-id
-              tag: 0.52.1
+              tag: v2.11.0
             env:
               APP_URL: https://auth.1337.pet
               TRUST_PROXY: "true"
+              UI_CONFIG_DISABLED: "true"
               SESSION_DURATION: "1440"
               ALLOW_USER_SIGNUPS: disabled
               FILE_BACKEND: s3
@@ -45,19 +46,19 @@ spec:
                 enabled: true
                 spec:
                   httpGet:
-                    path: /api/health
+                    path: /healthz
                     port: 1411
               readiness:
                 enabled: true
                 spec:
                   httpGet:
-                    path: /api/health
+                    path: /healthz
                     port: 1411
               startup:
                 enabled: true
                 spec:
                   httpGet:
-                    path: /api/health
+                    path: /healthz
                     port: 1411
                   failureThreshold: 30
             securityContext:

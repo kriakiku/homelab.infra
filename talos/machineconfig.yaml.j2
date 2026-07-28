@@ -7,6 +7,25 @@ machine:
 {% if machine.type == "controlplane" %}
     key: {{ certs.os.key }}
 {% endif %}
+{% if machine.type == "worker" %}
+  network:
+    interfaces:
+      # VLAN 4 (infra) — node IP, API/etcd; fallback default route
+      - interface: ens18
+        dhcp: true
+        dhcpOptions:
+          routeMetric: 200
+      # VLAN 5 (storage) — storage traffic only, never a default route
+      - interface: ens19
+        dhcp: true
+        dhcpOptions:
+          routeMetric: 4096
+      # VLAN 6 (egress) — internet egress, primary default route (NTP, image pulls)
+      - interface: ens20
+        dhcp: true
+        dhcpOptions:
+          routeMetric: 100
+{% endif %}
   features:
     apidCheckExtKeyUsage: true
     diskQuotaSupport: true

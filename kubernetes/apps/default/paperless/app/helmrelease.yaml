@@ -386,12 +386,15 @@ spec:
           paperless:
             app:
               - path: /tmp
-            redis:
-              - path: /tmp
-              - path: /data
           gotenberg:
             app:
               - path: /tmp
           tika:
             app:
               - path: /tmp
+      redis-data:
+        type: emptyDir
+        advancedMounts:
+          paperless:
+            redis:
+              - path: /data

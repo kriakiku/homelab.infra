@@ -16,3 +16,4 @@ resources:
   - ./pocket-id/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./vaultwarden/ks.yaml
+  - ./wallos/ks.yaml

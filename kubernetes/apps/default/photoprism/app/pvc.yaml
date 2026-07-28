@@ -1,5 +1,6 @@
 ---
-# NVMe PVC for MariaDB data (fast, small)
+# MariaDB data — keep local (fast queries). PhotoPrism does not support PostgreSQL.
+# Originals/import/storage live on NFS HDD; only this DB needs a local volume.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -9,17 +10,4 @@ spec:
   resources:
     requests:
       storage: 5Gi
-  storageClassName: local-path
----
-# NVMe PVC for PhotoPrism storage (thumbnails, cache, sidecar files)
-# Thumbnails alone can reach 20-30 GB for large libraries.
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: photoprism-storage
-spec:
-  accessModes: [ReadWriteOnce]
-  resources:
-    requests:
-      storage: 50Gi
   storageClassName: local-path

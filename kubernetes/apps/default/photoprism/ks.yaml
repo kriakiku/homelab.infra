@@ -5,16 +5,12 @@ kind: Kustomization
 metadata:
   name: photoprism
 spec:
-  components:
-    - ../../../../components/kopiur/backup
+  # No kopiur: originals live on NFS HDD (source of truth from Google/iCloud).
+  # MariaDB can be dumped separately later if needed; regenerable cache is not backed up.
   dependsOn:
     - name: pocket-id
   interval: 1h
   path: ./kubernetes/apps/default/photoprism/app
-  postBuild:
-    substitute:
-      APP: photoprism
-      KOPIUR_CAPACITY: 50Gi
   prune: true
   sourceRef:
     kind: GitRepository

@@ -225,7 +225,7 @@ spec:
                 port: *port
 
     persistence:
-      # MariaDB data — NVMe for fast queries
+      # MariaDB data — local-path (fast queries); not PostgreSQL
       db-data:
         existingClaim: photoprism-db
         advancedMounts:
@@ -233,15 +233,19 @@ spec:
             mariadb:
               - path: /var/lib/mysql
 
-      # PhotoPrism storage (thumbnails, sidecar, cache) — NVMe
+      # Cache / thumbnails / sidecar — HDD NFS (regenerable; originals are the backup)
       storage:
-        existingClaim: photoprism-storage
+        type: custom
+        volumeSpec:
+          nfs:
+            server: nfs.1337.pet
+            path: /export/hdd/photos/storage
         advancedMounts:
           photoprism:
             app:
               - path: /storage
 
-      # Photos originals — HDD NFS
+      # Photos originals — HDD NFS (Google / iCloud imports land here)
       photos-originals:
         type: custom
         volumeSpec:

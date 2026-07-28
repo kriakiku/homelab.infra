@@ -23,18 +23,15 @@ spec:
       - name: pocketid
         ensure: present
         login: true
+        createdb: true
         passwordSecret:
           name: main-db-pocketid-secret
       - name: gatus
         ensure: present
         login: true
+        createdb: true
         passwordSecret:
           name: main-db-gatus-secret
-    databases:
-      - name: pocketid
-        owner: pocketid
-      - name: gatus
-        owner: gatus
 
   monitoring:
     enablePodMonitor: true

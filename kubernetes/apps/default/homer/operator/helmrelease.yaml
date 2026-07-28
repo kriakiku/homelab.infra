@@ -15,8 +15,23 @@ spec:
       reconcileInterval: "60s"
       metrics:
         enabled: true
+        # gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0 is unpublished; scrape :8080 directly.
+        secureMetrics: false
     serviceMonitor:
       enabled: true
+    # Prefer worker, but allow control-plane when the worker is memory-full.
+    scheduling:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
     homer:
       image:
         repository: ghcr.io/bastienwirtz/homer

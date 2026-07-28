@@ -12,6 +12,13 @@ spec:
   values:
     operator:
       timezone: Europe/Vilnius
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 200m
+          memory: 128Mi
     metrics:
       enabled: true
       serviceMonitor:

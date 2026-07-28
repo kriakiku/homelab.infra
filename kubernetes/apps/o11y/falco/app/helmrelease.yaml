@@ -37,12 +37,18 @@ spec:
       json_include_tags_property: true
       log_level: info
       log_stderr: true
-      # Built-in Prometheus metrics endpoint on :8765
-      metrics:
-        enabled: true
-        interval: 15s
-        outputRule: true
-        resourceUtilizationEnabled: true
+      webserver:
+        # Required when metrics.enabled=true — exposes /metrics for Prometheus.
+        prometheus_metrics_enabled: true
+
+    # Chart-managed metrics (do NOT put under falco.metrics — that writes camelCase
+    # keys into falco.yaml and crashes Falco 0.44+).
+    metrics:
+      enabled: true
+      interval: 15s
+      # outputRule needs falco.priority >= info; we stay on warning + Prometheus.
+      outputRule: false
+      resourceUtilizationEnabled: true
 
     # ── Resources ─────────────────────────────────────────────────────────
     # Conservative sizing for a 2-node homelab.
@@ -54,6 +60,12 @@ spec:
       limits:
         memory: 512Mi
 
+    # Allow scheduling on the control-plane when the worker is memory-full.
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+
     # ── ServiceMonitor (Prometheus scrape) ─────────────────────────────────
     serviceMonitor:
       enabled: true
@@ -63,6 +75,11 @@ spec:
       enabled: true
 
       replicaCount: 1
+
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
 
       resources:
         requests:
@@ -112,6 +129,10 @@ spec:
       webui:
         enabled: true
         replicaCount: 1
+        tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+            effect: NoSchedule
         resources:
           requests:
             cpu: 10m
@@ -119,6 +140,11 @@ spec:
           limits:
             memory: 64Mi
         redis:
+          storageEnabled: false
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
           resources:
             requests:
               cpu: 10m

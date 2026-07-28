@@ -15,6 +15,7 @@ resources:
   - ./kestra/ks.yaml
   - ./linkwarden/ks.yaml
   - ./mailarchiver/ks.yaml
+  - ./one-api/ks.yaml
   - ./penpot/ks.yaml
   - ./paperless/ks.yaml
   - ./pocket-id/ks.yaml

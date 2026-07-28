@@ -68,6 +68,12 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-kestra-secret
+      - name: oneapi
+        ensure: present
+        login: true
+        createdb: true
+        passwordSecret:
+          name: main-db-oneapi-secret
 
   monitoring:
     enablePodMonitor: true

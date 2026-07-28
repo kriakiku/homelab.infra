@@ -46,64 +46,33 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-      fromEndpoints:
-        - matchLabels:
-            k8s-app: kube-dns
-            io.kubernetes.pod.namespace: kube-system
 
-    # ─── Intra-namespace: infrastructure only ───
+    # ─── Intra-namespace ───
     - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-      fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: flux-system
-      fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: flux-system
     - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: cert-manager
-      fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: cert-manager
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: network
-      fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: network
     - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: o11y
-      fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: o11y
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: actions-runner-system
-      fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: actions-runner-system
     - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kopiur-system
-      fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kopiur-system
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: system-upgrade
-      fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: system-upgrade
     - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: databases
-      fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: databases
 
@@ -115,9 +84,6 @@ spec:
       toPorts:
         - ports:
             - port: "25"
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: pocket-id
 
     # ─── pocket-id → seaweedfs (S3) :8333 ───
     - toServices:
@@ -127,23 +93,8 @@ spec:
       toPorts:
         - ports:
             - port: "8333"
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: pocket-id
 
-    # ─── pocket-id → main-db (PostgreSQL) :5432 ───
-    - toServices:
-        - k8sService:
-            serviceName: main-db-rw
-            namespace: databases
-      toPorts:
-        - ports:
-            - port: "5432"
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: pocket-id
-
-    # ─── gatus-sidecar → main-db (PostgreSQL) :5432 ───
+    # ─── pocket-id / gatus-sidecar → main-db (PostgreSQL) :5432 ───
     - toServices:
         - k8sService:
             serviceName: main-db-rw
@@ -152,9 +103,6 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: gatus-sidecar
 
     # ─── qui → qbittorrent (API) :80 ───
     - toServices:
@@ -165,9 +113,6 @@ spec:
         - ports:
             - port: "80"
               protocol: TCP
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: qui
 
     # ─── qui → pocket-id (OIDC) :1411 ───
     - toServices:
@@ -178,9 +123,6 @@ spec:
         - ports:
             - port: "1411"
               protocol: TCP
-      fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: qui
 
     # ─── CNPG main-db → seaweedfs (backups) :8333 ───
     - toServices:
@@ -190,9 +132,6 @@ spec:
       toPorts:
         - ports:
             - port: "8333"
-      fromEndpoints:
-        - matchLabels:
-            cnpg.io/cluster: main-db
 
     # ─── NFS (labeled pods only) ───
     - toCIDRSet:
@@ -201,15 +140,9 @@ spec:
         - ports:
             - port: "2049"
               protocol: TCP
-      fromEndpoints:
-        - matchLabels:
-            nfs-access: "true"
 
     # ─── Internet (labeled pods only) ───
-    - toEndpoints:
-        - matchLabels:
-            egress: "true"
-      toCIDRSet:
+    - toCIDRSet:
         - cidr: 0.0.0.0/0
           except:
             - 10.0.0.0/8

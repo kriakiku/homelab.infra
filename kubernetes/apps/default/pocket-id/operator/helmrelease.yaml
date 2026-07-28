@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/helmrelease_v2_pocket-id-operator.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pocket-id-operator
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: pocket-id-operator
+  interval: 1h
+  values:
+    operator:
+      timezone: Europe/Vilnius
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      dashboard:
+        enabled: true
+      grafanaDashboard:
+        enabled: true
+        allowCrossNamespaceImport: true
+        instanceSelector:
+          matchLabels:
+            dashboards: grafana
+    # Instance / users / groups / clients are managed as CRs alongside each app.
+    pocket-id-instance:
+      instance:
+        enabled: false
+    instance:
+      enabled: false

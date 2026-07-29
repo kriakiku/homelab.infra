@@ -3,19 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: one-api
+  name: photoprism
 spec:
+  # No kopiur: originals on NFS HDD are the Google/iCloud backup source of truth.
+  # Index DB lives in shared CNPG main-db (backed up via Barman → SeaweedFS).
   dependsOn:
     - name: pocket-id
       namespace: identity
     - name: cloudnative-pg-clusters
       namespace: databases
+    - name: nfs-mkdir
+      namespace: storage
   interval: 1h
-  path: ./kubernetes/apps/automation/one-api/app
+  path: ./kubernetes/apps/backup/photoprism/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: automation
+  targetNamespace: backup
   wait: false

@@ -78,8 +78,8 @@ spec:
           authURI: https://auth.1337.pet/authorize
           # Backend calls internal Pocket ID for token exchange and userinfo
           # (avoids external egress from the backend pod).
-          tokenURI: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/token
-          userURI: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/userinfo
+          tokenURI: http://pocket-id-oidc.identity.svc.cluster.local:8080/api/oidc/token
+          userURI: http://pocket-id-oidc.identity.svc.cluster.local:8080/api/oidc/userinfo
           scopes: openid email profile
           # Empty string disables role checking (all authenticated OIDC users accepted).
           roles: ""
@@ -100,6 +100,7 @@ spec:
           memory: 2Gi
 
     frontend:
+      replicaCount: 0
       resources:
         requests:
           cpu: 50m

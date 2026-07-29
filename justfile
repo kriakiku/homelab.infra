@@ -45,10 +45,12 @@ sops-secret:
 
     namespaces=(
         actions-runner-system
+        ai
         automation
         backup
         cert-manager
         databases
+        documents
         finance
         flux-system
         identity

@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       one-api:
+        replicas: 0
         annotations:
           # Reloader will restart the pod when one-api-oidc-credentials is created/updated
           # by pocket-id-operator, triggering the postStart OIDC auto-configuration.
@@ -191,8 +192,10 @@ spec:
             namespace: network
         rules:
           - backendRefs:
-              - identifier: app
-                port: *port
+              # Via KEDA HTTP interceptor — holds requests while one-api scales 0→1.
+              - name: keda-add-ons-http-interceptor-proxy
+                namespace: keda
+                port: 8080
 
     persistence:
       # /data is used by One API even with Postgres (logs dir, temp files).

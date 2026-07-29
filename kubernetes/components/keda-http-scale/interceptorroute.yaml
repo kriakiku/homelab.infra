@@ -1,0 +1,16 @@
+---
+# Requires Flux postBuild.substitute: APP, SERVICE, PORT, HOST
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: ${APP}
+spec:
+  target:
+    service: ${SERVICE}
+    port: ${PORT}
+  rules:
+    - hosts:
+        - ${HOST}
+  scalingMetric:
+    concurrency:
+      targetValue: 1

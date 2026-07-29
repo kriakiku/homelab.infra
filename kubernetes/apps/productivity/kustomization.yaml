@@ -10,7 +10,6 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./paperless/ks.yaml
   - ./linkwarden/ks.yaml
   - ./penpot/ks.yaml
   - ./atuin/ks.yaml

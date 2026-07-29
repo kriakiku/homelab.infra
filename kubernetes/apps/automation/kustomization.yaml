@@ -11,4 +11,3 @@ components:
 resources:
   - ./namespace.yaml
   - ./kestra/ks.yaml
-  - ./one-api/ks.yaml

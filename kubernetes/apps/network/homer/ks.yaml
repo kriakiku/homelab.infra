@@ -21,12 +21,24 @@ kind: Kustomization
 metadata:
   name: homer-instance
 spec:
+  components:
+    - ../../../../components/keda-http-scale
   dependsOn:
     - name: homer-operator
     - name: pocket-id
       namespace: identity
+    - name: keda-http-add-on
+      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/network/homer/instance
+  postBuild:
+    substitute:
+      APP: homer
+      SERVICE: homer
+      DEPLOYMENT: homer
+      PORT: "8080"
+      HOST: homer.1337.pet
+      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -43,6 +55,8 @@ metadata:
 spec:
   dependsOn:
     - name: homer-instance
+    - name: keda-http-add-on
+      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/network/homer/proxy
   prune: true

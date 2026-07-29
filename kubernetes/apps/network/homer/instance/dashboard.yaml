@@ -5,7 +5,8 @@ kind: Dashboard
 metadata:
   name: homer
 spec:
-  replicas: 1
+  # KEDA ScaledObject owns replica count (scale-to-zero when idle).
+  replicas: 0
   serviceSelector:
     matchLabels: {}
   homerConfig:

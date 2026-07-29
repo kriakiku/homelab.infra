@@ -13,9 +13,9 @@ spec:
     # Host header from callers using the ExternalName proxy Service below.
     - hosts:
         - paperless-tika-proxy
-        - paperless-tika-proxy.productivity
-        - paperless-tika-proxy.productivity.svc
-        - paperless-tika-proxy.productivity.svc.cluster.local
+        - paperless-tika-proxy.documents
+        - paperless-tika-proxy.documents.svc
+        - paperless-tika-proxy.documents.svc.cluster.local
   scalingMetric:
     concurrency:
       targetValue: 1

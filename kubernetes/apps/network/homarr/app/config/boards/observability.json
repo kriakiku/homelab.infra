@@ -316,66 +316,6 @@
           }
         }
       }
-    },
-    {
-      "id": "o11y-5",
-      "name": "Kromgo",
-      "url": "https://kromgo.1337.pet",
-      "behaviour": {
-        "externalUrl": "https://kromgo.1337.pet",
-        "isOpeningNewTab": true,
-        "tooltipDescription": "Cluster Badges"
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "okStatus": [],
-        "statusCodes": []
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kromgo.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "area": {
-        "type": "category",
-        "properties": {
-          "id": "o11y-logs"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
     }
   ],
   "widgets": [],

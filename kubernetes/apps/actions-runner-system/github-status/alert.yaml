@@ -1,0 +1,67 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/notification.toolkit.fluxcd.io/alert_v1beta3.json
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: github-status
+spec:
+  providerRef:
+    name: github-status
+  eventSources:
+    - kind: Kustomization
+      name: "*"
+      namespace: actions-runner-system
+    - kind: Kustomization
+      name: "*"
+      namespace: ai
+    - kind: Kustomization
+      name: "*"
+      namespace: automation
+    - kind: Kustomization
+      name: "*"
+      namespace: backup
+    - kind: Kustomization
+      name: "*"
+      namespace: cert-manager
+    - kind: Kustomization
+      name: "*"
+      namespace: databases
+    - kind: Kustomization
+      name: "*"
+      namespace: documents
+    - kind: Kustomization
+      name: "*"
+      namespace: finance
+    - kind: Kustomization
+      name: "*"
+      namespace: flux-system
+    - kind: Kustomization
+      name: "*"
+      namespace: identity
+    - kind: Kustomization
+      name: "*"
+      namespace: kopiur-system
+    - kind: Kustomization
+      name: "*"
+      namespace: kube-system
+    - kind: Kustomization
+      name: "*"
+      namespace: mail
+    - kind: Kustomization
+      name: "*"
+      namespace: media
+    - kind: Kustomization
+      name: "*"
+      namespace: network
+    - kind: Kustomization
+      name: "*"
+      namespace: o11y
+    - kind: Kustomization
+      name: "*"
+      namespace: productivity
+    - kind: Kustomization
+      name: "*"
+      namespace: storage
+    - kind: Kustomization
+      name: "*"
+      namespace: system-upgrade

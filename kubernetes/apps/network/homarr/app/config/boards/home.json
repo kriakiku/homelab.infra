@@ -878,66 +878,6 @@
       }
     },
     {
-      "id": "home-app-15",
-      "name": "Status",
-      "url": "https://status.1337.pet",
-      "behaviour": {
-        "externalUrl": "https://status.1337.pet",
-        "isOpeningNewTab": true,
-        "tooltipDescription": "Health"
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "okStatus": [],
-        "statusCodes": []
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "area": {
-        "type": "category",
-        "properties": {
-          "id": "home-o11y"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 4,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 4,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 1,
-            "y": 1
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
-    },
-    {
       "id": "home-app-17",
       "name": "Flux",
       "url": "https://flux-operator.1337.pet",

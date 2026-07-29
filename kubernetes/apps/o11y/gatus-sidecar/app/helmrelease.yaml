@@ -32,7 +32,6 @@ spec:
         gatus.home-operations.com/enabled: "false"
       hostnames:
         - "{{ .Release.Name }}.1337.pet"
-        - status.1337.pet
       parentRefs:
         - name: envoy-external
           namespace: network

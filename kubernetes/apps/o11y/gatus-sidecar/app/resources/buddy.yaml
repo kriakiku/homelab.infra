@@ -11,18 +11,7 @@ alerting:
       success-threshold: 2
     title: Gatus
 
-endpoints:
-  - name: Status Page
-    group: buddy
-    url: https://status.1337.pet
-    interval: 1m
-    ui:
-      hide-url: true
-      hide-hostname: true
-    conditions:
-      - "[STATUS] == 200"
-    alerts:
-      - type: gotify
+endpoints: []
 
 external-endpoints:
   - name: Heartbeat

@@ -25,8 +25,8 @@ spec:
               OAUTH2_PROXY_OIDC_ISSUER_URL: https://auth.1337.pet
               OAUTH2_PROXY_REDIRECT_URL: https://homer.1337.pet/oauth2/callback
               OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
-              # homer-operator creates a Service named after the Dashboard CR.
-              OAUTH2_PROXY_UPSTREAMS: http://homer.network.svc.cluster.local:8080
+              # Dashboard CR `homer` creates Service/Deployment `homer-homer`.
+              OAUTH2_PROXY_UPSTREAMS: http://homer-homer.network.svc.cluster.local:80
               OAUTH2_PROXY_EMAIL_DOMAINS: "*"
               OAUTH2_PROXY_SCOPE: "openid email profile"
               OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"

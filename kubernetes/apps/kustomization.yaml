@@ -17,7 +17,8 @@ resources:
   - ./kopiur-system
   - ./kube-system
   - ./mail
-  - ./media
+  # Temporary: media stack powered down. Uncomment to restore.
+  # - ./media
   - ./network
   # Temporary: o11y powered down. Uncomment to restore monitoring/logging.
   # - ./o11y

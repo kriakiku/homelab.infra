@@ -21,24 +21,12 @@ kind: Kustomization
 metadata:
   name: homer-instance
 spec:
-  components:
-    - ../../../../components/keda-http-scale
   dependsOn:
     - name: homer-operator
     - name: pocket-id
       namespace: identity
-    - name: keda-http-add-on
-      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/network/homer/instance
-  postBuild:
-    substitute:
-      APP: homer
-      SERVICE: homer
-      DEPLOYMENT: homer
-      PORT: "8080"
-      HOST: homer.1337.pet
-      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository
@@ -53,12 +41,24 @@ kind: Kustomization
 metadata:
   name: homer-proxy
 spec:
+  # Scale oauth2-proxy to zero; Dashboard UI stays managed by homer-operator
+  # (operator fights KEDA over Deployment replicas).
+  components:
+    - ../../../../components/keda-http-scale
   dependsOn:
     - name: homer-instance
     - name: keda-http-add-on
       namespace: keda
   interval: 1h
   path: ./kubernetes/apps/network/homer/proxy
+  postBuild:
+    substitute:
+      APP: homer-proxy
+      SERVICE: homer-proxy
+      DEPLOYMENT: homer-proxy
+      PORT: "4180"
+      HOST: homer.1337.pet
+      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository

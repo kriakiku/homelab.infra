@@ -5,8 +5,7 @@ kind: Dashboard
 metadata:
   name: homer
 spec:
-  # KEDA ScaledObject owns replica count (scale-to-zero when idle).
-  replicas: 0
+  replicas: 1
   serviceSelector:
     matchLabels: {}
   homerConfig:
@@ -222,7 +221,8 @@ spec:
           - parameters:
               name: Time Machine
               logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/apple.png"
+              # Homer operator rejects non-http(s) URLs; keep SMB path in the subtitle.
               subtitle: "smb://10.10.4.228/TimeMachine"
               tag: backup
-              url: "smb://10.10.4.228/TimeMachine"
+              url: "https://homer.1337.pet"
               target: _blank

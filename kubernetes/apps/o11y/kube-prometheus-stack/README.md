@@ -28,6 +28,9 @@ services:
 
 ### smartctl-exporter
 
+Runs on the Proxmox/NAS host (`expanse.internal:9633`); scraped via
+`scrapeconfig.yaml`. Not deployed in-cluster (Talos VMs see virtio disks only).
+
 ```yaml
 services:
     smartctl-exporter:

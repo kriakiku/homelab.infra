@@ -9,6 +9,9 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./scrapeconfig.yaml
+  # Host SMART on Proxmox (expanse.internal:9633 via scrapeconfig)
+  - ./smartctl-prometheusrule.yaml
+  - ./smartctl-grafanadashboard.yaml
 configMapGenerator:
   - name: flux-metrics-configmap
     files:

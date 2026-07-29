@@ -1,0 +1,39 @@
+---
+# Flux notification-controller expects githubApp* keys; ARC expects github_app_*.
+# Mirror ARC keys at build time so one encrypted secret stays the source of truth.
+- source:
+    kind: Secret
+    name: home-ops-runner-secret
+    fieldPath: stringData.github_app_id
+  targets:
+    - select:
+        kind: Secret
+        name: home-ops-runner-secret
+      fieldPaths:
+        - stringData.githubAppID
+      options:
+        create: true
+- source:
+    kind: Secret
+    name: home-ops-runner-secret
+    fieldPath: stringData.github_app_installation_id
+  targets:
+    - select:
+        kind: Secret
+        name: home-ops-runner-secret
+      fieldPaths:
+        - stringData.githubAppInstallationID
+      options:
+        create: true
+- source:
+    kind: Secret
+    name: home-ops-runner-secret
+    fieldPath: stringData.github_app_private_key
+  targets:
+    - select:
+        kind: Secret
+        name: home-ops-runner-secret
+      fieldPaths:
+        - stringData.githubAppPrivateKey
+      options:
+        create: true

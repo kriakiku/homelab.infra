@@ -32,14 +32,14 @@ spec:
             patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
-                value: --concurrent=2
+                value: --concurrent=1
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --requeue-dependency=30s
             target:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
-          - # Increase the memory limits
+          - # Homelab memory limits — enough headroom without reserving 2Gi
             patch: |-
               apiVersion: apps/v1
               kind: Deployment
@@ -52,21 +52,10 @@ spec:
                       - name: manager
                         resources:
                           limits:
-                            memory: 2Gi
+                            memory: 768Mi
             target:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
-          - # Enable in-memory kustomize builds
-            patch: |-
-              - op: replace
-                path: /spec/template/spec/volumes/0
-                value:
-                  name: temp
-                  emptyDir:
-                    medium: Memory
-            target:
-              kind: Deployment
-              name: kustomize-controller
           - # Enable Helm repositories caching
             patch: |-
               - op: add
@@ -78,14 +67,6 @@ spec:
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --helm-cache-purge-interval=5m
-            target:
-              kind: Deployment
-              name: source-controller
-          - # Cache Secrets and ConfigMaps
-            patch: |-
-              - op: add
-                path: /spec/template/spec/containers/0/args/-
-                value: --feature-gates=CacheSecretsAndConfigMaps=true
             target:
               kind: Deployment
               name: source-controller

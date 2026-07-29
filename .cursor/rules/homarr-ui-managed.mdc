@@ -1,0 +1,13 @@
+---
+description: Do not manage Homarr boards/widgets via GitOps — user configures them in Homarr UI
+globs: kubernetes/apps/network/homarr/**
+alwaysApply: false
+---
+
+# Homarr boards are UI-managed
+
+Do **not** add, seed, sync, or regenerate Homarr boards, widgets, or panel layouts from this repo.
+
+- No board JSON configs, seed Jobs/scripts, or Homarr API automation for dashboards
+- Keep Homarr deploy/infra only (HelmRelease, OIDC, secrets for app runtime like `SECRET_ENCRYPTION_KEY`)
+- Board and widget layout is configured manually in the Homarr UI by the user

@@ -10,6 +10,8 @@ spec:
     name: flux-operator
   interval: 1h
   values:
+    # Controllers only support error|info|debug — error ≈ warn+error for VL.
+    logLevel: error
     serviceMonitor:
       create: false
     web:

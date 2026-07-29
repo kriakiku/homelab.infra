@@ -12,6 +12,9 @@ spec:
   values:
     crds:
       create: true
+    # Operator supports error|info|debug|trace (no warn).
+    additionalArgs:
+      - --log-level=error
     monitoring:
       podMonitorEnabled: true
       grafanaDashboard:

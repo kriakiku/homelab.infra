@@ -12,6 +12,8 @@ spec:
   values:
     operator:
       timezone: Europe/Vilnius
+      args:
+        - --zap-log-level=warn
       resources:
         requests:
           cpu: 10m

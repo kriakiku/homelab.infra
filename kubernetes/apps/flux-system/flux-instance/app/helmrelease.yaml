@@ -127,3 +127,19 @@ spec:
             target:
               kind: Deployment
               name: kustomize-controller
+          - # Quiet Flux controllers for Victoria Logs (error|info|debug only).
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/containers/0/args/2
+                value: --log-level=error
+            target:
+              kind: Deployment
+              name: (source-controller|kustomize-controller|helm-controller)
+          - # Quiet notification-controller (log-level is args[1]).
+            patch: |-
+              - op: replace
+                path: /spec/template/spec/containers/0/args/1
+                value: --log-level=error
+            target:
+              kind: Deployment
+              name: notification-controller

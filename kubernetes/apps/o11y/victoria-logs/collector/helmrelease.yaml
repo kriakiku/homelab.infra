@@ -20,10 +20,37 @@ spec:
       - url: http://victoria-logs.o11y.svc.cluster.local:9428
         maxDiskUsagePerURL: 2GB
     collector:
-      # Skip CI/media noise and Prometheus config-reloader spam.
+      # Drop CI/media, infra noise, VL self-logs, and Prometheus config-reloader spam.
+      # Content-level (warn/error) filtering is not supported by vlagent yet; useful
+      # operators stay collected and are quieted via their own logLevel settings.
       excludeFilter: >-
-        kubernetes.pod_namespace:in(actions-runner-system, media)
+        kubernetes.pod_name:=%{HOSTNAME}
+        or kubernetes.pod_namespace:in(actions-runner-system, media)
         or kubernetes.container_name:in(config-reloader, prometheus-config-reloader, rules-configmap-reloader)
+        or kubernetes.pod_labels.app.kubernetes.io/name:in(
+          grafana-operator,
+          gateway-helm,
+          cilium-agent,
+          cilium-operator,
+          kube-prometheus-stack-prometheus-operator,
+          prometheus-adapter,
+          prometheus-node-exporter,
+          prometheus,
+          kube-state-metrics,
+          keda-operator,
+          keda-operator-metrics-apiserver,
+          keda-admission-webhooks,
+          http-add-on,
+          silence-operator,
+          descheduler,
+          metrics-server,
+          prometheus-blackbox-exporter,
+          reloader,
+          alertmanager,
+          spegel,
+          victoria-logs-collector,
+          victoria-logs-single
+        )
       streamFields:
         - kubernetes.pod_name
         - kubernetes.pod_namespace

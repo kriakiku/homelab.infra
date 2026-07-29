@@ -91,6 +91,9 @@ spec:
     # Allow backend to reach https://auth.1337.pet for JWKS key fetch (OIDC JWT validation).
     backend:
       replicaCount: 0
+      extraEnvs:
+        - name: PENPOT_SSRF_ALLOWED_HOSTS
+          value: pocket-id.identity.svc.cluster.local auth.1337.pet
       podLabels:
         egress: "true"
       resources:

@@ -10,6 +10,3 @@ resources:
   - ./rbac.yaml
   - ./github-status
 
-replacements:
-  - path: ./replacements.yaml
-

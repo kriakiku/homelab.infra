@@ -5,7 +5,7 @@ kind: HelmRelease
 metadata:
   name: victoria-logs-collector
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: victoria-logs-collector
@@ -15,11 +15,15 @@ spec:
       image:
         registry: quay.io
     podMonitor:
-      enabled: true
+      enabled: false
     remoteWrite:
       - url: http://victoria-logs.o11y.svc.cluster.local:9428
-        maxDiskUsagePerURL: 10GB
+        maxDiskUsagePerURL: 2GB
     collector:
+      # Skip CI/media noise and Prometheus config-reloader spam.
+      excludeFilter: >-
+        kubernetes.pod_namespace:in(actions-runner-system, media)
+        or kubernetes.container_name:in(config-reloader, prometheus-config-reloader, rules-configmap-reloader)
       streamFields:
         - kubernetes.pod_name
         - kubernetes.pod_namespace

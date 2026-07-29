@@ -22,7 +22,15 @@ spec:
       persistentVolume:
         enabled: true
         existingClaim: victoria-logs-nvme
-      retentionPeriod: 90d
+      # Min supported is 24h; ~1.5 days matches Prometheus.
+      retentionPeriod: 36h
+      retentionDiskSpaceUsage: "5"
+      resources:
+        requests:
+          cpu: 25m
+          memory: 192Mi
+        limits:
+          memory: 512Mi
       route:
         enabled: true
         hostnames:
@@ -31,4 +39,4 @@ spec:
           - name: envoy-internal
             namespace: network
       serviceMonitor:
-        enabled: true
+        enabled: false

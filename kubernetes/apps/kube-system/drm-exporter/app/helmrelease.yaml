@@ -23,7 +23,7 @@ spec:
           - PERFMON
     monitoring:
       serviceMonitor:
-        enabled: true
+        enabled: false
       dashboards:
         enabled: true
         grafanaOperator:

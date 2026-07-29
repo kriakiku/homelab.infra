@@ -39,7 +39,7 @@ spec:
     log:
       mode: console
     metrics:
-      enabled: "true"
+      enabled: "false"
     news:
       news_feed_enabled: "false"
     plugins:
@@ -73,6 +73,12 @@ spec:
                     secretKeyRef:
                       name: grafana-oidc-credentials
                       key: client_secret
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 128Mi
+                limits:
+                  memory: 384Mi
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true

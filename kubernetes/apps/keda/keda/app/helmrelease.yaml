@@ -39,14 +39,14 @@ spec:
           memory: 128Mi
     prometheus:
       operator:
-        enabled: true
+        enabled: false
         serviceMonitor:
-          enabled: true
+          enabled: false
       metricServer:
-        enabled: true
+        enabled: false
         serviceMonitor:
-          enabled: true
+          enabled: false
       webhooks:
-        enabled: true
+        enabled: false
         serviceMonitor:
-          enabled: true
+          enabled: false

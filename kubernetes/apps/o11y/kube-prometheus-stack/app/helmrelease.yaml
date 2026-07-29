@@ -35,12 +35,22 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+    # Control-plane component scrapes are noisy / often empty on Talos.
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
     kubeEtcd:
       service:
         selector:
           component: kube-apiserver # etcd runs on control plane nodes
     kubeProxy:
       enabled: false
+    defaultRules:
+      rules:
+        kubeControllerManager: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
     prometheus:
       route:
         main:
@@ -57,8 +67,11 @@ spec:
         ruleSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
-        retention: 90d
-        retentionSize: 50GB
+        # ~1.5 days — keep RAM/disk light on the single worker.
+        retention: 36h
+        retentionSize: 4GB
+        scrapeInterval: 1m
+        evaluationInterval: 1m
         securityContext:
           # Dropped capabilities remove DAC_OVERRIDE, so uid must own the volume.
           # local-path/XFS + seclabel: run as 1000 (not root) matching init chown.
@@ -89,21 +102,37 @@ spec:
                 # (kubelet otherwise creates the subPath as root and prometheus cannot write).
         resources:
           requests:
-            cpu: 100m
-            memory: 1Gi
+            cpu: 50m
+            memory: 512Mi
           limits:
-            memory: 2560Mi
+            memory: 1280Mi
         storageSpec:
           volumeClaimTemplate:
             spec:
               storageClassName: local-path
               resources:
                 requests:
-                   storage: 65Gi
+                  # Existing PVC will not shrink; retentionSize caps on-disk usage.
+                  storage: 10Gi
     prometheus-node-exporter:
       fullnameOverride: node-exporter
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
+      # Skip high-churn / low-value collectors for a small homelab.
+      collectors:
+        - certificatesigningrequests
+        - cronjobs
+        - daemonsets
+        - deployments
+        - jobs
+        - namespaces
+        - nodes
+        - persistentvolumeclaims
+        - persistentvolumes
+        - pods
+        - replicasets
+        - statefulsets
+        - storageclasses
     grafana:
       enabled: false
       forceDeployDashboards: true

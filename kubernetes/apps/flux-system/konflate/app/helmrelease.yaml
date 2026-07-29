@@ -31,7 +31,7 @@ spec:
         - "{{ .Release.Name }}.1337.pet"
     monitoring:
       serviceMonitor:
-        enabled: true
+        enabled: false
     resources:
       requests:
         cpu: 50m

@@ -23,5 +23,5 @@ spec:
             memory: 128Mi
       readOnlyRootFileSystem: true
       podMonitor:
-        enabled: true
+        enabled: false
         namespace: "{{ .Release.Namespace }}"

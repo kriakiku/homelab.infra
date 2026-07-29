@@ -11,7 +11,7 @@ spec:
   interval: 1h
   values:
     serviceMonitor:
-      create: true
+      create: false
     web:
       config:
         authentication:

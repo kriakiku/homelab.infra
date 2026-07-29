@@ -24,7 +24,7 @@ spec:
             tag: v0.18.2
             pullPolicy: IfNotPresent
     serviceMonitor:
-      enabled: true
+      enabled: false
       # Scrape manager :8080 directly (secureMetrics=false).
       endpoints:
         - port: metrics

@@ -28,14 +28,14 @@ spec:
         interval: 1h
       kustomize:
         patches:
-          - # Increase the number of workers
+          - # Homelab-sized concurrency — keep idle CPU low
             patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
-                value: --concurrent=10
+                value: --concurrent=2
               - op: add
                 path: /spec/template/spec/containers/0/args/-
-                value: --requeue-dependency=5s
+                value: --requeue-dependency=30s
             target:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
@@ -58,9 +58,6 @@ spec:
               name: (kustomize-controller|helm-controller|source-controller)
           - # Enable in-memory kustomize builds
             patch: |-
-              - op: add
-                path: /spec/template/spec/containers/0/args/-
-                value: --concurrent=20
               - op: replace
                 path: /spec/template/spec/volumes/0
                 value:
@@ -102,7 +99,7 @@ spec:
                 value: --oom-watch-memory-threshold=95
               - op: add
                 path: /spec/template/spec/containers/0/args/-
-                value: --oom-watch-interval=500ms
+                value: --oom-watch-interval=5s
             target:
               kind: Deployment
               name: helm-controller

@@ -15,6 +15,13 @@ machine:
         dhcp: true
         dhcpOptions:
           routeMetric: 200
+        # Keep internet default on ens20 (metric 100), but send replies to other
+        # LAN VLANs (e.g. clients 10.10.1.0/24) back via the infra gateway.
+        # Without this, L2 VIP / node IP on ens18 is blackholed from those VLANs.
+        routes:
+          - network: 10.10.0.0/16
+            gateway: 10.10.4.1
+            metric: 50
       # VLAN 5 (storage) — storage traffic only, never a default route
       - interface: ens19
         dhcp: true

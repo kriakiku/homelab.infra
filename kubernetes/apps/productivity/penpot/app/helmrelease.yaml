@@ -104,14 +104,6 @@ spec:
 
     frontend:
       replicaCount: 0
-      volumes:
-        - name: nginx-config-js
-          configMap:
-            name: penpot-frontend-nginx
-      volumeMounts:
-        - name: nginx-config-js
-          mountPath: /etc/nginx/overrides/location.d/config-js.conf
-          subPath: config-js.conf
       resources:
         requests:
           cpu: 50m

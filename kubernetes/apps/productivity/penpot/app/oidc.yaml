@@ -15,7 +15,8 @@ metadata:
 spec:
   name: Penpot
   clientID: penpot
-  pkceEnabled: true
+  # Penpot OIDC client does not send PKCE code_challenge.
+  pkceEnabled: false
   skipConsent: true
   callbackUrls:
     - https://penpot.1337.pet/api/auth/oidc/callback

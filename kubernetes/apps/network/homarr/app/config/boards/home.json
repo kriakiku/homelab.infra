@@ -1178,66 +1178,6 @@
       }
     },
     {
-      "id": "home-app-19",
-      "name": "Atuin",
-      "url": "https://atuin.1337.pet",
-      "behaviour": {
-        "externalUrl": "https://atuin.1337.pet",
-        "isOpeningNewTab": true,
-        "tooltipDescription": "Shell History"
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "okStatus": [],
-        "statusCodes": []
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/atuin.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "area": {
-        "type": "category",
-        "properties": {
-          "id": "home-infra"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 2,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
-    },
-    {
       "id": "home-app-20",
       "name": "Time Machine",
       "url": "https://timemachine.1337.pet",

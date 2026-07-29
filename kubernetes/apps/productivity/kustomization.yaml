@@ -12,4 +12,3 @@ resources:
   - ./namespace.yaml
   - ./linkwarden/ks.yaml
   - ./penpot/ks.yaml
-  - ./atuin/ks.yaml

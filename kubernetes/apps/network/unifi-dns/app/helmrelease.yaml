@@ -11,6 +11,7 @@ spec:
   interval: 1h
   values:
     fullnameOverride: *app
+    replicaCount: 1
     provider:
       name: webhook
       webhook:

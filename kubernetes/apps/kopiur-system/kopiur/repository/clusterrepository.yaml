@@ -3,21 +3,22 @@
 apiVersion: kopiur.home-operations.com/v1alpha1
 kind: ClusterRepository
 metadata:
-  name: expanse
+  name: gdrive
 spec:
   allowedNamespaces:
     all: true
+  # Allow projecting repo credentials into workload namespaces for movers.
+  credentialProjection:
+    allowed: true
   backend:
-    s3:
-      auth:
-        secretRef:
-          name: kopiur-repository-secret
-          namespace: kopiur-system
-      bucket: kopiur
-      endpoint: expanse.internal:9000
-      region: us-east-1
-      tls:
-        disableTls: true
+    # OAuth Drive via rclone (same remote as restic). Native kopia gdrive
+    # wants a service-account JSON; we only have an OAuth client.
+    rclone:
+      remotePath: gdrive:homelab-backups/kopiur
+      configSecretRef:
+        name: kopiur-repository-secret
+        namespace: kopiur-system
+      startupTimeout: 2m
   encryption:
     passwordSecretRef:
       name: kopiur-repository-secret

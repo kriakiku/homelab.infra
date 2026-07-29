@@ -29,6 +29,8 @@ spec:
               FIREWALL: "on"
               SERVER_COUNTRIES: Poland
               FIREWALL_OUTBOUND_SUBNETS: 10.0.0.0/8
+              # Allow kubelet probes / in-cluster clients to reach qBittorrent WebUI.
+              FIREWALL_INPUT_PORTS: "80"
             envFrom:
               - secretRef:
                   name: qbittorrent-secret

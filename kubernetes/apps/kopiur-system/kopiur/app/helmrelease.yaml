@@ -10,6 +10,10 @@ spec:
     name: kopiur
   interval: 1h
   values:
+    features:
+      # Required for ClusterRepository credentialProjection into workload NS.
+      credentialProjection:
+        enabled: true
     monitoring:
       dashboards:
         enabled: true

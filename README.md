@@ -13,7 +13,7 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 | Certificates | cert-manager (Let's Encrypt DNS-01 via Cloudflare) |
 | Secrets | SOPS + age (encrypted in Git, decrypted by Flux) |
 | Storage | local-path-provisioner (NVMe) + direct NFS mounts (HDD) |
-| Backups | Kopiur → expanse S3 | Restic → Google Drive |
+| Backups | Kopiur → Google Drive (rclone) | Restic → Google Drive |
 | Monitoring | kube-prometheus-stack + Grafana + Gatus |
 | Notifications | Gotify |
 | DNS | Cloudflare (public) + UniFi (private) |

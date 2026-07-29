@@ -17,7 +17,11 @@ spec:
       runAsGroup: ${KOPIUR_PGID:=1000}
   repository:
     kind: ClusterRepository
-    name: expanse
+    name: gdrive
+  # Secrets are also copied into app namespaces via the kopiur secret component;
+  # projection is the preferred path once features.credentialProjection is on.
+  credentialProjection:
+    enabled: true
   copyMethod: Direct
   retention:
     keepLatest: 3

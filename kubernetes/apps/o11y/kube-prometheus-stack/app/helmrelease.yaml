@@ -60,11 +60,13 @@ spec:
         retention: 90d
         retentionSize: 50GB
         securityContext:
-          # local-path + volume subPath leaves prometheus-db root-owned; non-root cannot write queries.active
-          runAsUser: 0
-          runAsGroup: 0
-          runAsNonRoot: false
-          fsGroup: 0
+          # Dropped capabilities remove DAC_OVERRIDE, so uid must own the volume.
+          # local-path/XFS + seclabel: run as 1000 (not root) matching init chown.
+          runAsUser: 1000
+          runAsGroup: 1000
+          runAsNonRoot: true
+          fsGroup: 1000
+          fsGroupChangePolicy: OnRootMismatch
         hostUsers: true
         initContainers:
           - name: fix-permissions
@@ -78,6 +80,8 @@ spec:
             securityContext:
               runAsUser: 0
               runAsNonRoot: false
+              capabilities:
+                add: [CHOWN, FOWNER, DAC_OVERRIDE]
             volumeMounts:
               - name: prometheus-kube-prometheus-stack-db
                 mountPath: /prometheus

@@ -15,10 +15,21 @@ spec:
       reconcileInterval: "60s"
       metrics:
         enabled: true
-        # gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0 is unpublished; scrape :8080 directly.
+        # Chart still injects kube-rbac-proxy whenever metrics.enabled=true;
+        # gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0 is unpublished.
         secureMetrics: false
+        rbacProxy:
+          image:
+            repository: quay.io/brancz/kube-rbac-proxy
+            tag: v0.18.2
+            pullPolicy: IfNotPresent
     serviceMonitor:
       enabled: true
+      # Scrape manager :8080 directly (secureMetrics=false).
+      endpoints:
+        - port: metrics
+          path: /metrics
+          interval: 30s
     resources:
       requests:
         cpu: 10m

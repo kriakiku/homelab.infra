@@ -79,5 +79,5 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/s3/eu-vno-1

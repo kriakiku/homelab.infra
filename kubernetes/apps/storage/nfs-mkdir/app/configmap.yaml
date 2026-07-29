@@ -1,5 +1,5 @@
 ---
-# Desired NFS directories under nfs.1337.pet:/export/{hdd,nvme}.
+# Desired NFS directories under nfs.internal.1337.pet:/export/{hdd,nvme}.
 # Format (whitespace-separated): <root>/<relative/path> <uid> <gid> [mode]
 # root is "hdd" or "nvme". Lines starting with # are ignored.
 #

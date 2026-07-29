@@ -133,11 +133,11 @@ spec:
             name: nfs-mkdir-paths
         - name: hdd
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd
         - name: nvme
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/nvme
         - name: tmp
           emptyDir:

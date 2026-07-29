@@ -171,8 +171,8 @@ Controlplane VM              Worker VM                     NFS LXC
 | Type | Location | Use |
 |---|---|---|
 | `local-path` (default) | NVMe on worker | Databases, configs, PVC defaults |
-| Direct NFS mount | `nfs.1337.pet:/export/hdd/media` | Media (qbittorrent, qui) |
-| Direct NFS mount | `nfs.1337.pet:/export/hdd/s3/eu-vno-1` | SeaweedFS S3 gateway |
+| Direct NFS mount | `nfs.internal.1337.pet:/export/hdd/media` | Media (qbittorrent, qui) |
+| Direct NFS mount | `nfs.internal.1337.pet:/export/hdd/s3/eu-vno-1` | SeaweedFS S3 gateway |
 
 
 

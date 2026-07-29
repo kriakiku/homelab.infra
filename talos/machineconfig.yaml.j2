@@ -32,6 +32,19 @@ machine:
         dhcp: true
         dhcpOptions:
           routeMetric: 100
+    # Pin NFS for kubelet mounts (bypass public DNS; multi-label avoids *.1337.pet wildcard).
+    extraHostEntries:
+      - ip: 10.10.5.5
+        aliases:
+          - nfs.internal.1337.pet
+          - nfs.1337.pet
+{% else %}
+  network:
+    extraHostEntries:
+      - ip: 10.10.5.5
+        aliases:
+          - nfs.internal.1337.pet
+          - nfs.1337.pet
 {% endif %}
   features:
     apidCheckExtKeyUsage: true
@@ -73,6 +86,11 @@ machine:
         noatime=True
         rsize=1048576
         wsize=1048576
+        proto=tcp
+        [ Server "nfs.internal.1337.pet" ]
+        addr=10.10.5.5
+        [ Server "nfs.1337.pet" ]
+        addr=10.10.5.5
   install:
     disk: /dev/sda
     image: factory.talos.dev/metal-installer/434f313f73662fa228468d2f78510cdf5034ee6c93478230089cf27f5e79509e:v1.13.7

@@ -59,7 +59,7 @@ spec:
           volumes:
             - name: documents
               nfs:
-                server: nfs.1337.pet
+                server: nfs.internal.1337.pet
                 path: /export/hdd/documents
             - name: tmp
               emptyDir: {}

@@ -15,7 +15,7 @@ spec:
     - hard
     - tcp
   nfs:
-    server: nfs.1337.pet
+    server: nfs.internal.1337.pet
     path: /export/nvme/monitoring/alertmanager
 ---
 apiVersion: v1
@@ -34,7 +34,7 @@ spec:
     - hard
     - tcp
   nfs:
-    server: nfs.1337.pet
+    server: nfs.internal.1337.pet
     path: /export/nvme/monitoring/grafana
 ---
 apiVersion: v1
@@ -53,5 +53,5 @@ spec:
     - hard
     - tcp
   nfs:
-    server: nfs.1337.pet
+    server: nfs.internal.1337.pet
     path: /export/nvme/monitoring/victoria-logs

@@ -42,7 +42,7 @@ spec:
               10.10.4.1 unifi.internal
               10.10.4.16 k8s-0.internal
               10.10.4.79 k8s-1.internal
-              10.10.5.5 expanse.internal
+              10.10.5.5 expanse.internal nfs.internal.1337.pet
               fallthrough
           - name: autopath
             parameters: "@kubernetes"

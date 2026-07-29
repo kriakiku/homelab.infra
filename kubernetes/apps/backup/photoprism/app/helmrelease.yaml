@@ -177,7 +177,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/nvme/photos/storage
         advancedMounts:
           photoprism:
@@ -189,7 +189,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/photos/originals
         advancedMounts:
           photoprism:
@@ -201,7 +201,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/photos/import
         advancedMounts:
           photoprism:

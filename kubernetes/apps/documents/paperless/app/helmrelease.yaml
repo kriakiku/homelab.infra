@@ -333,7 +333,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/nvme/paperless/data
         advancedMounts:
           paperless:
@@ -344,7 +344,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/nvme/paperless/tessdata
         advancedMounts:
           paperless:
@@ -357,7 +357,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/documents/paperless/media
         advancedMounts:
           paperless:
@@ -367,7 +367,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/documents/paperless/consume
         advancedMounts:
           paperless:
@@ -377,7 +377,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/documents/paperless/export
         advancedMounts:
           paperless:
@@ -387,7 +387,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/documents/paperless/trash
         advancedMounts:
           paperless:

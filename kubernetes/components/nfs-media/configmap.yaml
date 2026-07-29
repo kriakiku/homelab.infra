@@ -10,7 +10,7 @@ data:
         type: custom
         volumeSpec:
           nfs:
-            server: nfs.1337.pet
+            server: nfs.internal.1337.pet
             path: /export/hdd/media
         globalMounts:
           - path: /media

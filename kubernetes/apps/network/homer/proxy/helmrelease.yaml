@@ -35,6 +35,7 @@ spec:
               OAUTH2_PROXY_UPSTREAMS: http://homer-homer.network.svc.cluster.local:80
               OAUTH2_PROXY_EMAIL_DOMAINS: "*"
               OAUTH2_PROXY_SCOPE: "openid email profile"
+              OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
               OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
               OAUTH2_PROXY_COOKIE_SECURE: "true"
               OAUTH2_PROXY_REVERSE_PROXY: "true"

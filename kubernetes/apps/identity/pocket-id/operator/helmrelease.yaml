@@ -13,7 +13,7 @@ spec:
     operator:
       timezone: Europe/Vilnius
       args:
-        - --zap-log-level=warn
+        - --zap-log-level=error
       resources:
         requests:
           cpu: 10m

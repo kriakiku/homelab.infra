@@ -1,5 +1,5 @@
 # Ensure local-path is the cluster default so charts that omit
-# storageClassName (e.g. penpot) still bind on k8s-1 hostpath.
+# storageClassName (e.g. linkwarden) still bind on k8s-1 hostpath.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:

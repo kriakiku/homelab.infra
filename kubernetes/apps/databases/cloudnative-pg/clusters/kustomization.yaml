@@ -10,7 +10,6 @@ resources:
   - ./main-db-linkwarden-secret.sops.yaml
   - ./main-db-vaultwarden-secret.sops.yaml
   - ./main-db-mailarchiver-secret.sops.yaml
-  - ./main-db-penpot-secret.sops.yaml
   - ./main-db-kestra-secret.sops.yaml
   - ./main-db-oneapi-secret.sops.yaml
   - ./main-db-photoprism-secret.sops.yaml

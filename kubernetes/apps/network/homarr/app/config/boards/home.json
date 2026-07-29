@@ -458,66 +458,6 @@
       }
     },
     {
-      "id": "home-app-7",
-      "name": "Penpot",
-      "url": "https://penpot.1337.pet",
-      "behaviour": {
-        "externalUrl": "https://penpot.1337.pet",
-        "isOpeningNewTab": true,
-        "tooltipDescription": "Design Tool"
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "okStatus": [],
-        "statusCodes": []
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/penpot.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "area": {
-        "type": "category",
-        "properties": {
-          "id": "home-ai"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 0,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
-    },
-    {
       "id": "home-app-8",
       "name": "One API",
       "url": "https://one-api.1337.pet",

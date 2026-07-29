@@ -21,6 +21,9 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 
 ## Planned
 
+- **Penpot** — open-source design tool. Removed for now; worth bringing back
+  later under `kubernetes/apps/productivity/penpot` (CNPG role, SeaweedFS
+  bucket, Pocket ID OIDC, KEDA scale-to-zero).
 - **Falco** — runtime security (syscall auditing). Removed for now to cut idle
   CPU/noise on the worker; re-enable under `kubernetes/apps/o11y/falco` when
   the cluster has more headroom.

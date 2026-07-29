@@ -11,4 +11,3 @@ components:
 resources:
   - ./namespace.yaml
   - ./linkwarden/ks.yaml
-  - ./penpot/ks.yaml

@@ -54,8 +54,6 @@ spec:
     parentRefs:
       - name: envoy-external
         namespace: network
-    template:
-      metadata:
   podSecurityContext:
     runAsNonRoot: true
     runAsUser: 1000

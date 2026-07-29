@@ -94,7 +94,6 @@ spec:
               persistentVolumeClaim:
                 claimName: grafana-nvme
   httpRoute:
-    metadata:
     spec:
       hostnames:
         - grafana.1337.pet

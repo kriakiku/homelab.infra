@@ -104,6 +104,18 @@ spec:
 
     frontend:
       replicaCount: 0
+      # Override chart default "$PENPOT_FLAGS ..." — K8s does not expand that prefix.
+      extraEnvs:
+        - name: PENPOT_FLAGS
+          value: disable-registration disable-login-with-password enable-login-with-oidc enable-oidc-registration enable-smtp disable-email-verification disable-telemetry disable-secure-session-cookies
+      volumes:
+        - name: nginx-config-js
+          configMap:
+            name: penpot-frontend-nginx
+      volumeMounts:
+        - name: nginx-config-js
+          mountPath: /etc/nginx/overrides/location.d/config-js.conf
+          subPath: config-js.conf
       resources:
         requests:
           cpu: 50m

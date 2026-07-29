@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: penpot-frontend-nginx
+data:
+  config-js.conf: |
+    # config.js is generated at pod start from PENPOT_FLAGS; do not cache it or
+    # browsers keep stale auth flags until max-age (7d) expires.
+    location = /js/config.js {
+      include /etc/nginx/nginx-security-headers.conf;
+      add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+      try_files $uri =404;
+    }

@@ -6,6 +6,7 @@ resources:
   - ./secret.sops.yaml
   - ./oidc.yaml
   - ./httproute.yaml
+  - ./nginx-config.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./scale.yaml

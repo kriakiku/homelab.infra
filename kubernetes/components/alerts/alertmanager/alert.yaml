@@ -26,4 +26,5 @@ spec:
     - dial.*tcp.*timeout
     - dial.*tcp.*unreachable
     - waiting.*socket
-  suspend: false
+  # Temporary: o11y/Alertmanager offline. Set false when restoring ./o11y.
+  suspend: true

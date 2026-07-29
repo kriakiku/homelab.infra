@@ -19,7 +19,8 @@ resources:
   - ./mail
   - ./media
   - ./network
-  - ./o11y
+  # Temporary: o11y powered down. Uncomment to restore monitoring/logging.
+  # - ./o11y
   - ./productivity
   - ./storage
   - ./system-upgrade

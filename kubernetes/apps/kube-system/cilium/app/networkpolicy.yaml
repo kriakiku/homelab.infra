@@ -100,9 +100,6 @@ spec:
             io.kubernetes.pod.namespace: mail
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: keda
-    - toEndpoints:
-        - matchLabels:
             io.kubernetes.pod.namespace: documents
     - toEndpoints:
         - matchLabels:

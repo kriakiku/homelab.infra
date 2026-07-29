@@ -10,8 +10,6 @@ spec:
       namespace: identity
     - name: nfs-mkdir
       namespace: storage
-    - name: keda-http-add-on
-      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/documents/paperless/app
   prune: true

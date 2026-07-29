@@ -106,9 +106,7 @@ spec:
               PAPERLESS_DB_OPTIONS: '{"sslmode":"disable"}'
               PAPERLESS_REDIS: redis://localhost:6379
               PAPERLESS_TIKA_ENABLED: "true"
-              # Via KEDA HTTP interceptor (ExternalName → interceptor :8080).
-              # Holds the request while paperless-tika scales 0→1.
-              PAPERLESS_TIKA_ENDPOINT: http://paperless-tika-proxy:8080
+              PAPERLESS_TIKA_ENDPOINT: http://paperless-tika:9998
               PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://paperless-gotenberg:3000
               PAPERLESS_EMAIL_HOST: smtp-relay.mail.svc.cluster.local
               PAPERLESS_EMAIL_PORT: "25"
@@ -216,7 +214,7 @@ spec:
                 memory: 128Mi
 
       tika:
-        replicas: 0
+        replicas: 1
         pod:
           securityContext:
             runAsNonRoot: true

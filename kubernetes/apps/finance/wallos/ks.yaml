@@ -7,22 +7,14 @@ metadata:
 spec:
   components:
     - ../../../../components/kopiur/backup
-    - ../../../../components/keda-http-scale
   dependsOn:
     - name: pocket-id
       namespace: identity
-    - name: keda-http-add-on
-      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/finance/wallos/app
   postBuild:
     substitute:
       APP: wallos
-      SERVICE: wallos
-      DEPLOYMENT: wallos
-      PORT: "80"
-      HOST: wallos.1337.pet
-      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository

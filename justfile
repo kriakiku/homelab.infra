@@ -54,7 +54,6 @@ sops-secret:
         finance
         flux-system
         identity
-        keda
         kopiur-system
         kube-system
         mail

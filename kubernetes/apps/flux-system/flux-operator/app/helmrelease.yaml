@@ -22,12 +22,8 @@ spec:
             username: flux
             groups:
               - flux-admin
+      # HTTPRoute owned by flux-operator-proxy (oauth2-proxy → Pocket ID).
       httpRoute:
-        enabled: true
-        hostnames:
-          - flux-operator.1337.pet
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
+        enabled: false
       networkPolicy:
         create: false

@@ -3,15 +3,15 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: wallos-proxy
+  name: flux-operator-proxy
 spec:
   chartRef:
     kind: OCIRepository
-    name: wallos-proxy
+    name: flux-operator-proxy
   interval: 1h
   values:
     controllers:
-      wallos-proxy:
+      flux-operator-proxy:
         replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
@@ -29,9 +29,9 @@ spec:
               OAUTH2_PROXY_REDEEM_URL: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/token
               OAUTH2_PROXY_OIDC_JWKS_URL: http://pocket-id.identity.svc.cluster.local:1411/.well-known/jwks.json
               OAUTH2_PROXY_PROFILE_URL: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/userinfo
-              OAUTH2_PROXY_REDIRECT_URL: https://wallos.1337.pet/oauth2/callback
+              OAUTH2_PROXY_REDIRECT_URL: https://flux-operator.1337.pet/oauth2/callback
               OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
-              OAUTH2_PROXY_UPSTREAMS: http://wallos:80
+              OAUTH2_PROXY_UPSTREAMS: http://flux-operator:9080
               OAUTH2_PROXY_EMAIL_DOMAINS: "*"
               OAUTH2_PROXY_SCOPE: "openid email profile"
               OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
@@ -45,17 +45,17 @@ spec:
               OAUTH2_PROXY_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
-                    name: wallos-oidc-credentials
+                    name: flux-operator-oidc-credentials
                     key: client_id
               OAUTH2_PROXY_CLIENT_SECRET:
                 valueFrom:
                   secretKeyRef:
-                    name: wallos-oidc-credentials
+                    name: flux-operator-oidc-credentials
                     key: client_secret
               OAUTH2_PROXY_COOKIE_SECRET:
                 valueFrom:
                   secretKeyRef:
-                    name: wallos-proxy-secret
+                    name: flux-operator-proxy-secret
                     key: OAUTH2_PROXY_COOKIE_SECRET
             probes:
               liveness:
@@ -104,7 +104,7 @@ spec:
 
     service:
       app:
-        controller: wallos-proxy
+        controller: flux-operator-proxy
         ports:
           http:
             port: *port
@@ -112,9 +112,9 @@ spec:
     route:
       app:
         hostnames:
-          - wallos.1337.pet
+          - flux-operator.1337.pet
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: network
         rules:
           - backendRefs:

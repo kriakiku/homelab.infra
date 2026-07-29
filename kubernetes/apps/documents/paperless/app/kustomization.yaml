@@ -8,4 +8,3 @@ resources:
   - ./oidc-init.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-  - ./tika-scale.yaml

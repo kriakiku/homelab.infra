@@ -5,25 +5,13 @@ kind: Kustomization
 metadata:
   name: vaultwarden
 spec:
-  components:
-    - ../../../../components/keda-http-scale
   dependsOn:
     - name: pocket-id
       namespace: identity
     - name: cloudnative-pg-clusters
       namespace: databases
-    - name: keda-http-add-on
-      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/identity/vaultwarden/app
-  postBuild:
-    substitute:
-      APP: vaultwarden
-      SERVICE: vaultwarden
-      DEPLOYMENT: vaultwarden
-      PORT: "80"
-      HOST: vaultwarden.1337.pet
-      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository

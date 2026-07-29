@@ -25,6 +25,7 @@ spec:
             - name: envoy-internal
               namespace: network
       alertmanagerSpec:
+        replicas: 1
         alertmanagerConfiguration:
           name: alertmanager
         externalUrl: https://alertmanager.1337.pet
@@ -61,6 +62,7 @@ spec:
             - name: envoy-internal
               namespace: network
       prometheusSpec:
+        replicas: 1
         externalUrl: https://prometheus.1337.pet
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false

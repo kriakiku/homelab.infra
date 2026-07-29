@@ -14,15 +14,15 @@ spec:
       enableGatewayAPI: true
       reconcileInterval: "60s"
       metrics:
-        enabled: true
-        # Chart still injects kube-rbac-proxy whenever metrics.enabled=true;
-        # gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0 is unpublished.
+        # Avoid kube-rbac-proxy sidecar — one container is enough for homelab.
+        enabled: false
         secureMetrics: false
         rbacProxy:
           image:
             repository: quay.io/brancz/kube-rbac-proxy
             tag: v0.18.2
             pullPolicy: IfNotPresent
+    replicaCount: 1
     serviceMonitor:
       enabled: false
       # Scrape manager :8080 directly (secureMetrics=false).

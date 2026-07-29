@@ -18,6 +18,8 @@ spec:
       tag: v1.3.29
 
     # Standalone mode — all components in one pod (suitable for homelab).
+    common:
+      replicas: 1
     deployments:
       standalone:
         enabled: true

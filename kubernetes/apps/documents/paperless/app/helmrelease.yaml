@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       paperless:
+        replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -254,6 +255,7 @@ spec:
                 memory: 1536Mi
 
       gotenberg:
+        replicas: 1
         pod:
           securityContext:
             runAsNonRoot: true

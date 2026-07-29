@@ -18,22 +18,22 @@ spec:
     resources:
       operator:
         requests:
-          cpu: 25m
-          memory: 64Mi
+          cpu: 50m
+          memory: 192Mi
         limits:
-          memory: 256Mi
+          memory: 384Mi
       metricServer:
         requests:
-          cpu: 10m
-          memory: 32Mi
-        limits:
+          cpu: 25m
           memory: 128Mi
+        limits:
+          memory: 256Mi
       webhooks:
         requests:
           cpu: 10m
-          memory: 32Mi
-        limits:
           memory: 64Mi
+        limits:
+          memory: 128Mi
     prometheus:
       operator:
         enabled: true

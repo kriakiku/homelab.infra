@@ -26,15 +26,15 @@ spec:
       responseHeaderTimeout: 600s
       resources:
         requests:
-          cpu: 10m
-          memory: 32Mi
+          cpu: 25m
+          memory: 64Mi
         limits:
-          memory: 128Mi
+          memory: 256Mi
     scaler:
       replicas: 1
       resources:
         requests:
-          cpu: 10m
+          cpu: 50m
           memory: 32Mi
         limits:
           memory: 64Mi
@@ -42,7 +42,7 @@ spec:
       replicas: 1
       resources:
         requests:
-          cpu: 10m
-          memory: 32Mi
-        limits:
+          cpu: 25m
           memory: 64Mi
+        limits:
+          memory: 128Mi

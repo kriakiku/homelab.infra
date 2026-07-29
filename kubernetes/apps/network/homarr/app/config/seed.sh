@@ -25,42 +25,47 @@ for i in $(seq 1 60); do
 done
 
 echo "Fetching existing boards..."
-existing=$(curl -sf \
+existing=$(curl -sS \
   -H "ApiKey: ${HOMARR_API_KEY}" \
-  "${HOMARR_URL}/api/trpc/board.getAllBoards?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%7D%7D" \
+  "${HOMARR_URL}/api/trpc/board.getAllBoards" \
   2>/dev/null || echo "")
 
 imported=0
 skipped=0
+failed=0
 
 for board_file in "${BOARDS_DIR}"/*.json; do
   [ -f "$board_file" ] || continue
-  board_name=$(basename "$board_file" .json)
 
-  if echo "$existing" | grep -q "\"name\":\"${board_name}\"" 2>/dev/null; then
-    echo "Board '${board_name}' already exists — skipping."
+  display_name=$(grep -A3 '"configProperties"' "$board_file" | grep '"name"' | head -1 | sed 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+
+  if echo "$existing" | grep -Fq "\"name\":\"${display_name}\"" 2>/dev/null; then
+    echo "Board '${display_name}' already exists — skipping."
     skipped=$((skipped + 1))
     continue
   fi
-
-  display_name=$(grep -A3 '"configProperties"' "$board_file" | grep '"name"' | head -1 | sed 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
 
   echo "Importing board '${display_name}' from ${board_file}..."
 
   config_json=$(printf '{"onlyImportApps":false,"sidebarBehaviour":"last-section","name":"%s"}' "$display_name")
 
-  response=$(curl -sf \
+  http_code=$(curl -sS -o /tmp/homarr-import-response.json -w "%{http_code}" \
     -H "ApiKey: ${HOMARR_API_KEY}" \
-    -F "file=@${board_file}" \
-    -F "configuration=${config_json}" \
-    "${HOMARR_URL}/api/trpc/board.importOldmarrConfig?batch=1" \
-    2>&1) || {
-    echo "Failed to import '${display_name}': ${response}"
-    continue
-  }
+    -F "file=@${board_file};type=application/json" \
+    -F "configuration=${config_json};type=application/json" \
+    "${HOMARR_URL}/api/trpc/board.importOldmarrConfig" \
+    || true)
 
-  echo "Imported '${display_name}'."
-  imported=$((imported + 1))
+  if [ "$http_code" = "200" ] && ! grep -q '"error"' /tmp/homarr-import-response.json 2>/dev/null; then
+    echo "Imported '${display_name}'."
+    imported=$((imported + 1))
+  else
+    echo "Failed to import '${display_name}' (HTTP ${http_code}):"
+    cat /tmp/homarr-import-response.json 2>/dev/null || true
+    echo
+    failed=$((failed + 1))
+  fi
 done
 
-echo "Board seeding complete: ${imported} imported, ${skipped} skipped."
+echo "Board seeding complete: ${imported} imported, ${skipped} skipped, ${failed} failed."
+[ "$failed" -eq 0 ]

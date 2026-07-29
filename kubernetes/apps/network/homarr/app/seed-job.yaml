@@ -4,8 +4,13 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: homarr-seed-boards
+  labels:
+    app.kubernetes.io/name: homarr
+    app.kubernetes.io/component: seed
   annotations:
     kustomize.toolkit.fluxcd.io/force: enabled
+    # Bump to force Job recreation after seed script / API key updates.
+    seed.homarr.1337.pet/revision: "2"
 spec:
   ttlSecondsAfterFinished: 86400
   backoffLimit: 3

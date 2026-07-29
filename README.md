@@ -24,6 +24,10 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 - **Falco** — runtime security (syscall auditing). Removed for now to cut idle
   CPU/noise on the worker; re-enable under `kubernetes/apps/o11y/falco` when
   the cluster has more headroom.
+- **snapshot-controller** — CSI VolumeSnapshot CRDs. Disabled for now (Kopiur
+  uses `copyMethod: Direct`, no VolumeSnapshots). Re-enable: uncomment in
+  `kubernetes/apps/kube-system/kustomization.yaml` and clear `suspend` on
+  `snapshot-controller/ks.yaml`.
 
 ## Prerequisites
 

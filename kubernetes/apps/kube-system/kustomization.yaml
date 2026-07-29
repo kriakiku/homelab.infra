@@ -16,6 +16,8 @@ resources:
   - ./kata-containers/ks.yaml
   - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
-  - ./snapshot-controller/ks.yaml
+  # Temporary: CSI VolumeSnapshots unused (Kopiur copyMethod: Direct).
+  # Re-enable: uncomment + clear suspend on snapshot-controller/ks.yaml
+  # - ./snapshot-controller/ks.yaml
   - ./reloader/ks.yaml
   - ./spegel/ks.yaml

@@ -98,6 +98,9 @@ spec:
     - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: mail
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: keda
 
     # ─── pocket-id → smtp-relay :25 ───
     - toServices:

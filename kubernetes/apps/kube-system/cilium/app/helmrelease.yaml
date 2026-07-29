@@ -20,7 +20,7 @@ spec:
       preallocateMaps: true
     bpfClockProbe: true
     bgpControlPlane:
-      enabled: true
+      enabled: false
     cgroup:
       automount:
         enabled: false
@@ -45,10 +45,10 @@ spec:
     kubeProxyReplacement: true
     kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
     l2announcements:
-      enabled: false
+      enabled: true
     loadBalancer:
       algorithm: maglev
-      mode: dsr
+      mode: hybrid
     localRedirectPolicies:
       enabled: true
     operator:

@@ -1,21 +1,9 @@
 # Cilium
 
-## UniFi BGP
+## L2 Announcements
 
-```sh
-router bgp 64513
-  bgp router-id 10.10.4.1
-  no bgp ebgp-requires-policy
+UDR7 does not support BGP. Cilium uses L2 announcements (ARP) instead.
 
-  neighbor k8s peer-group
-  neighbor k8s remote-as 64514
+LoadBalancer IPs from pool `10.10.4.224/27` are announced via ARP on interface `ens18` (VLAN 4 / infra).
 
-  neighbor 10.10.4.10 peer-group k8s
-  neighbor 10.10.4.11 peer-group k8s
-
-  address-family ipv4 unicast
-    neighbor k8s next-hop-self
-    neighbor k8s soft-reconfiguration inbound
-  exit-address-family
-exit
-```
+No router configuration is required — the router learns the MAC address of the announcing node via ARP automatically.

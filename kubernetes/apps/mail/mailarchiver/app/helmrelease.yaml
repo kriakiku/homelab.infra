@@ -84,7 +84,8 @@ spec:
               OAuth__ClientScopes__1: profile
               OAuth__ClientScopes__2: email
               OAuth__AutoApproveUsers: "false"
-              OAuth__DisablePasswordLogin: "false"
+              OAuth__DisablePasswordLogin: "true"
+              OAuth__AutoRedirect: "true"
               # Tell ASP.NET to trust X-Forwarded-* from Envoy
               ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
               DOTNET_RUNNING_IN_CONTAINER: "true"

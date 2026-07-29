@@ -30,3 +30,21 @@ spec:
     namespace: flux-system
   targetNamespace: finance
   wait: false
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: wallos-proxy
+spec:
+  dependsOn:
+    - name: wallos
+  interval: 1h
+  path: ./kubernetes/apps/finance/wallos/proxy
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: finance
+  wait: false

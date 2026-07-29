@@ -15,12 +15,10 @@ metadata:
 spec:
   name: Wallos
   clientID: wallos
-  # Pocket ID docs: Wallos does not use PKCE.
-  pkceEnabled: false
+  pkceEnabled: true
   skipConsent: true
   callbackUrls:
-    - https://wallos.1337.pet
-    - https://wallos.1337.pet/index.php
+    - https://wallos.1337.pet/oauth2/callback
   logo:
     nameOverride: wallos
   allowedUserGroups:

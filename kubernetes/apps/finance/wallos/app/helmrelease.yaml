@@ -22,26 +22,7 @@ spec:
               tag: 5.4.2@sha256:316f26e13265958e7946ef98ff600516fddc51d698ee98bd1ae1577e5e00789f
             env:
               TZ: Europe/Vilnius
-              # Wallos is SQLite-only and stores logos on local disk (no Postgres / S3).
-              OIDC_ENABLED: "true"
-              OIDC_PROVIDER_NAME: Pocket ID
-              OIDC_ISSUER: https://auth.1337.pet
-              OIDC_REDIRECT_URL: https://wallos.1337.pet/index.php
-              OIDC_SCOPES: openid email profile
-              OIDC_AUTO_CREATE_USER: "true"
-              OIDC_DISABLE_PASSWORD_LOGIN: "false"
-              OIDC_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: wallos-oidc-credentials
-                    key: client_id
-              OIDC_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: wallos-oidc-credentials
-                    key: client_secret
-              # Allow resolving auth.1337.pet / in-cluster IdP for OIDC token exchange.
-              SSRF_ALLOWLIST: auth.1337.pet,pocket-id.identity.svc.cluster.local
+              # Auth is handled by wallos-proxy (oauth2-proxy); app login is disabled.
             probes:
               liveness:
                 enabled: true
@@ -96,18 +77,7 @@ spec:
           http:
             port: *port
 
-    route:
-      app:
-        hostnames:
-          - wallos.1337.pet
-        parentRefs:
-          - name: envoy-external
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: keda-add-ons-http-interceptor-proxy
-                namespace: keda
-                port: 8080
+    # HTTPRoute is owned by wallos-proxy (oauth2-proxy).
 
     persistence:
       data:

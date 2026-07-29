@@ -28,8 +28,8 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
+                  # Wallos redirects `/` when auth is off; TCP avoids redirect loops.
+                  tcpSocket:
                     port: &port 80
                   periodSeconds: 30
                   timeoutSeconds: 5
@@ -38,8 +38,7 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
+                  tcpSocket:
                     port: *port
                   periodSeconds: 10
                   timeoutSeconds: 5
@@ -48,8 +47,7 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
+                  tcpSocket:
                     port: *port
                   failureThreshold: 30
                   periodSeconds: 5

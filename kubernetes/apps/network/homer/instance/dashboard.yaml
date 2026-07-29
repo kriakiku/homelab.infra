@@ -202,7 +202,7 @@ spec:
               logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homer.png"
               subtitle: "Service Dashboard"
               tag: dashboard
-              url: "https://homer.1337.pet"
+              url: "https://1337.pet"
               target: _blank
           - parameters:
               name: Flux
@@ -224,5 +224,5 @@ spec:
               # Homer operator rejects non-http(s) URLs; keep SMB path in the subtitle.
               subtitle: "smb://10.10.4.228/TimeMachine"
               tag: backup
-              url: "https://homer.1337.pet"
+              url: "https://timemachine.1337.pet"
               target: _blank

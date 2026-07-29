@@ -18,7 +18,7 @@ spec:
   pkceEnabled: true
   skipConsent: true
   callbackUrls:
-    - https://homer.1337.pet/oauth2/callback
+    - https://1337.pet/oauth2/callback
   logo:
     nameOverride: homer
   allowedUserGroups:

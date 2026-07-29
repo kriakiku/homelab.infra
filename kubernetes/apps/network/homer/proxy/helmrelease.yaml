@@ -29,7 +29,7 @@ spec:
               OAUTH2_PROXY_REDEEM_URL: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/token
               OAUTH2_PROXY_OIDC_JWKS_URL: http://pocket-id.identity.svc.cluster.local:1411/.well-known/jwks.json
               OAUTH2_PROXY_PROFILE_URL: http://pocket-id.identity.svc.cluster.local:1411/api/oidc/userinfo
-              OAUTH2_PROXY_REDIRECT_URL: https://homer.1337.pet/oauth2/callback
+              OAUTH2_PROXY_REDIRECT_URL: https://1337.pet/oauth2/callback
               OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
               # Dashboard CR `homer` creates Service/Deployment `homer-homer`.
               OAUTH2_PROXY_UPSTREAMS: http://homer-homer.network.svc.cluster.local:80
@@ -111,7 +111,7 @@ spec:
     route:
       app:
         hostnames:
-          - homer.1337.pet
+          - 1337.pet
         parentRefs:
           - name: envoy-external
             namespace: network

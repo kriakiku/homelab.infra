@@ -72,6 +72,13 @@ spec:
         data:
           config.yaml: |-
             ingress:
+              - hostname: "1337.pet"
+                originRequest:
+                  http2Origin: true
+                  keepAliveTimeout: 3600s
+                  originServerName: external.1337.pet
+                  tcpKeepAlive: 7200s
+                service: https://envoy-external.{{ .Release.Namespace }}.svc.cluster.local:443
               - hostname: "*.1337.pet"
                 originRequest:
                   http2Origin: true

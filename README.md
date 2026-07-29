@@ -119,7 +119,7 @@ sops kubernetes/apps/<ns>/<app>/app/secret.sops.yaml
 Secrets currently managed (by app): cloudflare (dns/tunnel/issuer), unifi-dns,
 grafana admin, gatus/alertmanager (buddy + gotify), qui, smtp-relay, pocket-id,
 qbittorrent (wireguard), flux webhook + GitHub token, GitHub App (ARC runners),
-konflate, seaweedfs S3, restic, and kopiur repository credentials.
+seaweedfs S3, restic, and kopiur repository credentials.
 
 ## Network architecture
 

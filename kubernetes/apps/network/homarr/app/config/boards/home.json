@@ -1058,66 +1058,6 @@
       }
     },
     {
-      "id": "home-app-18",
-      "name": "Konflate",
-      "url": "https://konflate.1337.pet",
-      "behaviour": {
-        "externalUrl": "https://konflate.1337.pet",
-        "isOpeningNewTab": true,
-        "tooltipDescription": "PR Automation"
-      },
-      "network": {
-        "enabledStatusChecker": true,
-        "okStatus": [],
-        "statusCodes": []
-      },
-      "appearance": {
-        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/konflate.png",
-        "appNameStatus": "normal",
-        "positionAppName": "column",
-        "appNameFontSize": 16,
-        "lineClampAppName": 1
-      },
-      "area": {
-        "type": "category",
-        "properties": {
-          "id": "home-infra"
-        }
-      },
-      "shape": {
-        "lg": {
-          "location": {
-            "x": 1,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "md": {
-          "location": {
-            "x": 1,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        },
-        "sm": {
-          "location": {
-            "x": 1,
-            "y": 0
-          },
-          "size": {
-            "width": 1,
-            "height": 1
-          }
-        }
-      }
-    },
-    {
       "id": "home-app-20",
       "name": "Time Machine",
       "url": "https://timemachine.1337.pet",

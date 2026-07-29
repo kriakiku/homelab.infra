@@ -5,6 +5,9 @@ kind: Kustomization
 metadata:
   name: penpot-cache
 spec:
+  dependsOn:
+    - name: keda-http-add-on
+      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/productivity/penpot/cache
   prune: true
@@ -21,8 +24,6 @@ kind: Kustomization
 metadata:
   name: penpot
 spec:
-  components:
-    - ../../../../components/keda-http-scale
   dependsOn:
     - name: penpot-cache
     - name: pocket-id
@@ -33,14 +34,6 @@ spec:
       namespace: keda
   interval: 1h
   path: ./kubernetes/apps/productivity/penpot/app
-  postBuild:
-    substitute:
-      APP: penpot-frontend
-      SERVICE: penpot-frontend
-      DEPLOYMENT: penpot-frontend
-      PORT: "80"
-      HOST: penpot.1337.pet
-      COOLDOWN: "600"
   prune: true
   sourceRef:
     kind: GitRepository

@@ -90,6 +90,7 @@ spec:
 
     # Allow backend to reach https://auth.1337.pet for JWKS key fetch (OIDC JWT validation).
     backend:
+      replicaCount: 0
       podLabels:
         egress: "true"
       resources:
@@ -109,6 +110,7 @@ spec:
           memory: 512Mi
 
     exporter:
+      replicaCount: 0
       resources:
         requests:
           cpu: 50m

@@ -1,0 +1,84 @@
+---
+# Scale the whole Penpot stack from one HTTP route (cold start holds on frontend).
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: penpot
+spec:
+  target:
+    # Chart Service for frontend is named after the release, port 8080.
+    service: penpot
+    port: 8080
+  rules:
+    - hosts:
+        - penpot.1337.pet
+  scalingMetric:
+    concurrency:
+      targetValue: 1
+  timeouts:
+    # Backend cold start is slower than frontend.
+    readiness: 300s
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: penpot-frontend
+spec:
+  scaleTargetRef:
+    name: penpot-frontend
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: penpot
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: penpot-backend
+spec:
+  scaleTargetRef:
+    name: penpot-backend
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: penpot
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: penpot-exporter
+spec:
+  scaleTargetRef:
+    name: penpot-exporter
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: penpot
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: penpot-cache
+spec:
+  scaleTargetRef:
+    name: penpot-cache
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: penpot

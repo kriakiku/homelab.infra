@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       penpot-cache:
+        replicas: 0
         containers:
           app:
             image:

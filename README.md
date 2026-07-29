@@ -21,6 +21,9 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 
 ## Planned
 
+- **New API** — want to try [Calcium-Ion/new-api](https://github.com/Calcium-Ion/new-api)
+  (One API fork) as the LLM gateway under `kubernetes/apps/ai/`. One API was
+  removed; do not bring `justsong/one-api` back.
 - **Penpot** — open-source design tool. Removed for now; worth bringing back
   later under `kubernetes/apps/productivity/penpot` (CNPG role, SeaweedFS
   bucket, Pocket ID OIDC, KEDA scale-to-zero).

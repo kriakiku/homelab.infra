@@ -13,4 +13,5 @@ resources:
   - ./restic-backup/ks.yaml
   - ./restic-documents/ks.yaml
   - ./timemachine/ks.yaml
-  - ./photoprism/ks.yaml
+  # Temporary: PhotoPrism powered down. Uncomment to restore.
+  # - ./photoprism/ks.yaml

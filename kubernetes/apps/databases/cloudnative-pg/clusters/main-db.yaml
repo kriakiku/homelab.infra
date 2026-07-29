@@ -21,7 +21,7 @@ spec:
     storageClass: local-path
 
   # Shared instance backing app databases (pocketid, gatus, paperless,
-  # linkwarden, vaultwarden, mailarchiver, kestra, oneapi, photoprism).
+  # linkwarden, vaultwarden, mailarchiver, kestra, photoprism).
   resources:
     requests:
       cpu: 100m
@@ -73,12 +73,6 @@ spec:
         createdb: true
         passwordSecret:
           name: main-db-kestra-secret
-      - name: oneapi
-        ensure: present
-        login: true
-        createdb: true
-        passwordSecret:
-          name: main-db-oneapi-secret
       - name: photoprism
         ensure: present
         login: true

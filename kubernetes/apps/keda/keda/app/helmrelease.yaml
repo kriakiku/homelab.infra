@@ -14,29 +14,28 @@ spec:
         kind: HelmRepository
         name: kedacore
   values:
-    # Chart defaults cpu limits to 1 core each — that alone added ~3 CPU to
-    # cluster limit totals. Match the rest of the homelab: memory limits only.
+    # Chart defaults cpu limits to 1 core each; override with modest caps.
     resources:
       operator:
         requests:
           cpu: 50m
           memory: 192Mi
         limits:
-          cpu: null
+          cpu: 200m
           memory: 384Mi
       metricServer:
         requests:
           cpu: 25m
           memory: 128Mi
         limits:
-          cpu: null
+          cpu: 250m
           memory: 256Mi
       webhooks:
         requests:
           cpu: 10m
           memory: 64Mi
         limits:
-          cpu: null
+          cpu: 100m
           memory: 128Mi
     prometheus:
       operator:

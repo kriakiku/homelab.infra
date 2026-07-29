@@ -92,6 +92,7 @@ spec:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 10.10.4.228
+          external-dns.alpha.kubernetes.io/hostname: timemachine.1337.pet
         externalTrafficPolicy: Local
         ports:
           smb:

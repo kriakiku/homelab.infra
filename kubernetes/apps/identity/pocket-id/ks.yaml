@@ -23,8 +23,6 @@ metadata:
 spec:
   dependsOn:
     - name: pocket-id-operator
-    - name: keda-http-add-on
-      namespace: keda
   interval: 1h
   path: ./kubernetes/apps/identity/pocket-id/instance
   prune: true

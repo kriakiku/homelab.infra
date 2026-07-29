@@ -41,7 +41,7 @@ spec:
                     name: wallos-oidc-credentials
                     key: client_secret
               # Allow resolving auth.1337.pet / in-cluster IdP for OIDC token exchange.
-              SSRF_ALLOWLIST: auth.1337.pet,pocket-id-oidc.identity.svc.cluster.local,pocket-id.identity.svc.cluster.local
+              SSRF_ALLOWLIST: auth.1337.pet,pocket-id.identity.svc.cluster.local
             probes:
               liveness:
                 enabled: true

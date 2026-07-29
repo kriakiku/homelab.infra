@@ -11,6 +11,7 @@ resources:
   - ./finance
   - ./flux-system
   - ./identity
+  - ./keda
   - ./kopiur-system
   - ./kube-system
   - ./mail

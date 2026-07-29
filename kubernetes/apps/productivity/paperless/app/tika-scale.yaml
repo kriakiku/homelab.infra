@@ -1,0 +1,51 @@
+---
+# Route in-cluster Paperless → Tika traffic through the KEDA HTTP interceptor
+# so cold starts hold the request until paperless-tika scales from 0 → 1.
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: paperless-tika
+spec:
+  target:
+    service: paperless-tika
+    port: 9998
+  rules:
+    # Host header from callers using the ExternalName proxy Service below.
+    - hosts:
+        - paperless-tika-proxy
+        - paperless-tika-proxy.productivity
+        - paperless-tika-proxy.productivity.svc
+        - paperless-tika-proxy.productivity.svc.cluster.local
+  scalingMetric:
+    concurrency:
+      targetValue: 1
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: paperless-tika
+spec:
+  scaleTargetRef:
+    name: paperless-tika
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  # Idle this long with no in-flight HTTP before scaling to zero.
+  cooldownPeriod: 600
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: paperless-tika
+---
+# Callers in this namespace use paperless-tika-proxy → interceptor.
+# ExternalName is DNS-only (no port remap), so callers must use :8080.
+apiVersion: v1
+kind: Service
+metadata:
+  name: paperless-tika-proxy
+spec:
+  type: ExternalName
+  externalName: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+  ports:
+    - name: http
+      port: 8080

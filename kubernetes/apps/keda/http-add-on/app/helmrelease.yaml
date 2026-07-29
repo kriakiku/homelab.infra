@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keda-add-ons-http
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: keda-add-ons-http
+      version: "0.15.0"
+      sourceRef:
+        kind: HelmRepository
+        name: kedacore
+        namespace: keda
+  values:
+    # Homelab: one interceptor is enough; default min=3 wastes RAM.
+    interceptor:
+      replicas:
+        min: 1
+        max: 2
+      # Hold cold-start requests long enough for apache/tika-full to become ready.
+      readinessTimeout: 180s
+      # Office/PDF parsing can be slow once Tika is up.
+      responseHeaderTimeout: 600s
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+    scaler:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi
+    operator:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi

@@ -26,6 +26,8 @@ spec:
               tag: v1.63.0@sha256:6daf640531c1c114ccce15775185b3fb8958365a62c2fabc559d9cc5ae064326
             env:
               TZ: Europe/Vilnius
+              PUID: "1000"
+              PGID: "1000"
               BASE_URL: https://1337.pet
               NEXTAUTH_URL: https://1337.pet
               AUTH_PROVIDERS: oidc
@@ -78,9 +80,6 @@ spec:
                   failureThreshold: 60
                   periodSeconds: 5
             securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
-              runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: [ALL] }
@@ -93,9 +92,8 @@ spec:
 
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
 
     service:
       app:

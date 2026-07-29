@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: qui
 spec:
+  # Temporary: media stack powered down to cut idle CPU/noise. Remove suspend to restore.
+  suspend: true
   components:
     - ../../../../components/kopiur/backup
     - ../../../../components/zeroscaler

@@ -38,16 +38,18 @@ for board_file in "${BOARDS_DIR}"/*.json; do
   [ -f "$board_file" ] || continue
 
   display_name=$(grep -A3 '"configProperties"' "$board_file" | grep '"name"' | head -1 | sed 's/.*"name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+  # Homarr board names must match /^[A-Za-z0-9-_]*$/
+  board_slug=$(printf '%s' "$display_name" | tr ' ' '-' | tr -cd 'A-Za-z0-9-_')
 
-  if echo "$existing" | grep -Fq "\"name\":\"${display_name}\"" 2>/dev/null; then
-    echo "Board '${display_name}' already exists — skipping."
+  if echo "$existing" | grep -Fq "\"name\":\"${board_slug}\"" 2>/dev/null; then
+    echo "Board '${board_slug}' already exists — skipping."
     skipped=$((skipped + 1))
     continue
   fi
 
-  echo "Importing board '${display_name}' from ${board_file}..."
+  echo "Importing board '${board_slug}' from ${board_file}..."
 
-  config_json=$(printf '{"onlyImportApps":false,"sidebarBehaviour":"last-section","name":"%s"}' "$display_name")
+  config_json=$(printf '{"onlyImportApps":false,"sidebarBehaviour":"last-section","name":"%s"}' "$board_slug")
 
   http_code=$(curl -sS -o /tmp/homarr-import-response.json -w "%{http_code}" \
     -H "ApiKey: ${HOMARR_API_KEY}" \
@@ -57,10 +59,10 @@ for board_file in "${BOARDS_DIR}"/*.json; do
     || true)
 
   if [ "$http_code" = "200" ] && ! grep -q '"error"' /tmp/homarr-import-response.json 2>/dev/null; then
-    echo "Imported '${display_name}'."
+    echo "Imported '${board_slug}'."
     imported=$((imported + 1))
   else
-    echo "Failed to import '${display_name}' (HTTP ${http_code}):"
+    echo "Failed to import '${board_slug}' (HTTP ${http_code}):"
     cat /tmp/homarr-import-response.json 2>/dev/null || true
     echo
     failed=$((failed + 1))

@@ -10,7 +10,7 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/force: enabled
     # Bump to force Job recreation after seed script / API key updates.
-    seed.homarr.1337.pet/revision: "2"
+    seed.homarr.1337.pet/revision: "3"
 spec:
   ttlSecondsAfterFinished: 86400
   backoffLimit: 3

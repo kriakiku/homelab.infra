@@ -179,12 +179,6 @@ spec:
 
     route:
       app:
-        annotations:
-          item.homer.rajsingh.info/name: "One API"
-          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/one-api.png"
-          item.homer.rajsingh.info/subtitle: "LLM API Gateway"
-          service.homer.rajsingh.info/name: "AI"
-          service.homer.rajsingh.info/icon: "fa-solid fa-brain"
         hostnames:
           - one-api.1337.pet
         parentRefs:

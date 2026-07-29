@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homarr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: homarr
+  interval: 1h
+  values:
+    controllers:
+      homarr:
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/homarr-labs/homarr
+              tag: v1.63.0@sha256:6daf640531c1c114ccce15775185b3fb8958365a62c2fabc559d9cc5ae064326
+            env:
+              TZ: Europe/Vilnius
+              BASE_URL: https://1337.pet
+              NEXTAUTH_URL: https://1337.pet
+              AUTH_PROVIDERS: oidc
+              AUTH_OIDC_CLIENT_NAME: Pocket ID
+              AUTH_OIDC_ISSUER: https://auth.1337.pet
+              AUTH_OIDC_AUTO_LOGIN: "true"
+              AUTH_OIDC_FORCE_USERINFO: "true"
+              AUTH_OIDC_SCOPE_OVERWRITE: openid email profile
+              AUTH_OIDC_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: homarr-oidc-credentials
+                    key: client_id
+              AUTH_OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: homarr-oidc-credentials
+                    key: client_secret
+              SECRET_ENCRYPTION_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: homarr-secret
+                    key: SECRET_ENCRYPTION_KEY
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health/live
+                    port: &port 7575
+                  periodSeconds: 30
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health/ready
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health/live
+                    port: *port
+                  failureThreshold: 60
+                  periodSeconds: 5
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: [ALL] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 768Mi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+
+    service:
+      app:
+        controller: homarr
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
+        hostnames:
+          - 1337.pet
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: local-path
+        advancedMounts:
+          homarr:
+            app:
+              - path: /appdata

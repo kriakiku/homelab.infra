@@ -3,28 +3,28 @@
 apiVersion: pocketid.internal/v1alpha1
 kind: PocketIDUserGroup
 metadata:
-  name: homer
+  name: homarr
 spec:
-  friendlyName: Homer Dashboard
+  friendlyName: Homarr Dashboard
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/aclerici38/pocket-id-operator/v0.11.1/dist/schemas/pocketidoidcclient_v1alpha1.json
 apiVersion: pocketid.internal/v1alpha1
 kind: PocketIDOIDCClient
 metadata:
-  name: homer
+  name: homarr
 spec:
-  name: Homer
-  clientID: homer
+  name: Homarr
+  clientID: homarr
   pkceEnabled: true
   skipConsent: true
   callbackUrls:
-    - https://1337.pet/oauth2/callback
+    - https://1337.pet/api/auth/callback/oidc
   logo:
-    nameOverride: homer
+    nameOverride: homarr
   allowedUserGroups:
-    - name: homer
+    - name: homarr
   secret:
-    name: homer-oidc-credentials
+    name: homarr-oidc-credentials
     keys:
       clientID: client_id
       clientSecret: client_secret

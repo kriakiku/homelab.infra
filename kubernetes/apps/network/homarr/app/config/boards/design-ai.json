@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "configProperties": {
+    "name": "Design & AI"
+  },
+  "categories": [
+    {
+      "id": "ai-apps",
+      "position": 0,
+      "name": "Design & AI"
+    }
+  ],
+  "wrappers": [],
+  "apps": [
+    {
+      "id": "ai-0",
+      "name": "Penpot",
+      "url": "https://penpot.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://penpot.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Open-Source Design Tool"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/penpot.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "ai-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "ai-1",
+      "name": "One API",
+      "url": "https://one-api.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://one-api.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "LLM API Gateway"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/openai.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "ai-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "ai-2",
+      "name": "Kestra",
+      "url": "https://kestra.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://kestra.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Workflow Orchestration"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kestra.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "ai-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    }
+  ],
+  "widgets": [],
+  "settings": {
+    "common": {
+      "searchEngine": {
+        "type": "google",
+        "properties": {
+          "openInNewTab": true,
+          "enabled": false
+        }
+      }
+    },
+    "customization": {
+      "layout": {
+        "enabledLeftSidebar": false,
+        "enabledRightSidebar": false,
+        "enabledDocker": false,
+        "enabledPing": true,
+        "enabledSearchbar": false
+      },
+      "pageTitle": "1337.pet",
+      "colors": {
+        "primary": "#3367d6",
+        "secondary": "#4f8ef7"
+      },
+      "gridstack": {
+        "columnCountSmall": 3,
+        "columnCountMedium": 6,
+        "columnCountLarge": 12
+      }
+    },
+    "access": {
+      "allowGuests": false
+    }
+  }
+}

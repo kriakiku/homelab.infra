@@ -1,0 +1,290 @@
+{
+  "schemaVersion": 1,
+  "configProperties": {
+    "name": "Infrastructure"
+  },
+  "categories": [
+    {
+      "id": "infra-apps",
+      "position": 0,
+      "name": "Infrastructure"
+    }
+  ],
+  "wrappers": [],
+  "apps": [
+    {
+      "id": "infra-0",
+      "name": "Flux",
+      "url": "https://flux-operator.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://flux-operator.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "GitOps Controller"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/flux.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "infra-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "infra-1",
+      "name": "Konflate",
+      "url": "https://konflate.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://konflate.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "GitOps PR Automation"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/konflate.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "infra-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "infra-2",
+      "name": "Atuin",
+      "url": "https://atuin.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://atuin.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Shell History Sync"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/atuin.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "infra-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "infra-3",
+      "name": "Time Machine",
+      "url": "https://timemachine.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://timemachine.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "macOS Backups"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/apple.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "infra-apps"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 3,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 3,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 1
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    }
+  ],
+  "widgets": [],
+  "settings": {
+    "common": {
+      "searchEngine": {
+        "type": "google",
+        "properties": {
+          "openInNewTab": true,
+          "enabled": false
+        }
+      }
+    },
+    "customization": {
+      "layout": {
+        "enabledLeftSidebar": false,
+        "enabledRightSidebar": false,
+        "enabledDocker": false,
+        "enabledPing": true,
+        "enabledSearchbar": false
+      },
+      "pageTitle": "1337.pet",
+      "colors": {
+        "primary": "#3367d6",
+        "secondary": "#4f8ef7"
+      },
+      "gridstack": {
+        "columnCountSmall": 3,
+        "columnCountMedium": 6,
+        "columnCountLarge": 12
+      }
+    },
+    "access": {
+      "allowGuests": false
+    }
+  }
+}

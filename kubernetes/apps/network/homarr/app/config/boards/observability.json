@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "configProperties": {
+    "name": "Observability"
+  },
+  "categories": [
+    {
+      "id": "o11y-monitoring",
+      "position": 0,
+      "name": "Monitoring"
+    },
+    {
+      "id": "o11y-logs",
+      "position": 1,
+      "name": "Logs & Status"
+    }
+  ],
+  "wrappers": [],
+  "apps": [
+    {
+      "id": "o11y-0",
+      "name": "Grafana",
+      "url": "https://grafana.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://grafana.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Dashboards & Metrics"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/grafana.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-monitoring"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "o11y-1",
+      "name": "Prometheus",
+      "url": "https://prometheus.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://prometheus.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Metrics"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prometheus.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-monitoring"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "o11y-2",
+      "name": "Alertmanager",
+      "url": "https://alertmanager.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://alertmanager.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Alerts"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/alertmanager.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-monitoring"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "o11y-3",
+      "name": "Victoria Logs",
+      "url": "https://vlogs.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://vlogs.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Log Storage"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/victoriametrics.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-logs"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "o11y-4",
+      "name": "Status",
+      "url": "https://status.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://status.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Service Health"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/gatus.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-logs"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 1,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "o11y-5",
+      "name": "Kromgo",
+      "url": "https://kromgo.1337.pet",
+      "behaviour": {
+        "externalUrl": "https://kromgo.1337.pet",
+        "isOpeningNewTab": true,
+        "tooltipDescription": "Cluster Badges"
+      },
+      "network": {
+        "enabledStatusChecker": true,
+        "okStatus": [],
+        "statusCodes": []
+      },
+      "appearance": {
+        "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/kromgo.png",
+        "appNameStatus": "normal",
+        "positionAppName": "column",
+        "appNameFontSize": 16,
+        "lineClampAppName": 1
+      },
+      "area": {
+        "type": "category",
+        "properties": {
+          "id": "o11y-logs"
+        }
+      },
+      "shape": {
+        "lg": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "md": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        },
+        "sm": {
+          "location": {
+            "x": 2,
+            "y": 0
+          },
+          "size": {
+            "width": 1,
+            "height": 1
+          }
+        }
+      }
+    }
+  ],
+  "widgets": [],
+  "settings": {
+    "common": {
+      "searchEngine": {
+        "type": "google",
+        "properties": {
+          "openInNewTab": true,
+          "enabled": false
+        }
+      }
+    },
+    "customization": {
+      "layout": {
+        "enabledLeftSidebar": false,
+        "enabledRightSidebar": false,
+        "enabledDocker": false,
+        "enabledPing": true,
+        "enabledSearchbar": false
+      },
+      "pageTitle": "1337.pet",
+      "colors": {
+        "primary": "#3367d6",
+        "secondary": "#4f8ef7"
+      },
+      "gridstack": {
+        "columnCountSmall": 3,
+        "columnCountMedium": 6,
+        "columnCountLarge": 12
+      }
+    },
+    "access": {
+      "allowGuests": false
+    }
+  }
+}

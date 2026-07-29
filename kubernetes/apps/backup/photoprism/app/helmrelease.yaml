@@ -161,12 +161,6 @@ spec:
 
     route:
       app:
-        annotations:
-          item.homer.rajsingh.info/name: "PhotoPrism"
-          item.homer.rajsingh.info/logo: "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/photoprism.png"
-          item.homer.rajsingh.info/subtitle: "Photo Library"
-          service.homer.rajsingh.info/name: "Personal"
-          service.homer.rajsingh.info/icon: "fa-solid fa-images"
         hostnames:
           - photoprism.1337.pet
         parentRefs:

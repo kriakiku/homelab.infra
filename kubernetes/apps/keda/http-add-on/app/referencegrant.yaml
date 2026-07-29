@@ -11,22 +11,13 @@ spec:
       namespace: ai
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      namespace: documents
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
       namespace: finance
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       namespace: identity
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      namespace: network
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
       namespace: productivity
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      namespace: backup
   to:
     - group: ""
       kind: Service

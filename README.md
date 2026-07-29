@@ -19,6 +19,12 @@ Kubernetes home lab cluster deployed with [Talos](https://www.talos.dev) on [Pro
 | DNS | Cloudflare (public) + UniFi (private) |
 | CI | Self-hosted ARC runners on Kata Containers |
 
+## Planned
+
+- **Falco** — runtime security (syscall auditing). Removed for now to cut idle
+  CPU/noise on the worker; re-enable under `kubernetes/apps/o11y/falco` when
+  the cluster has more headroom.
+
 ## Prerequisites
 
 - Proxmox host with 2 VMs provisioned (1 controlplane, 1 worker)

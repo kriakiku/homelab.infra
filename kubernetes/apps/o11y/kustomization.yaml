@@ -9,7 +9,6 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./falco/ks.yaml
   - ./storage/ks.yaml
   - ./blackbox-exporter/ks.yaml
   - ./gatus-sidecar/ks.yaml

@@ -11,12 +11,11 @@ spec:
   values:
     config:
       publicUri: https://penpot.1337.pet
-      # Flags: disable form registration (OIDC-only self-signup),
-      #        keep password login for admin fallback,
-      #        enable OIDC + auto-create OIDC users, SMTP, no email verification.
+      # Flags: OIDC-only auth — no registration form, no password login,
+      #        auto-create OIDC users, SMTP, no email verification.
       flags: >-
         disable-registration
-        enable-login-with-password
+        disable-login-with-password
         enable-login-with-oidc
         enable-oidc-registration
         enable-smtp

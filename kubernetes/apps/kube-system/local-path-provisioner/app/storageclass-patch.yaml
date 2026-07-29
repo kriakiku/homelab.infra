@@ -1,0 +1,8 @@
+# Ensure local-path is the cluster default so charts that omit
+# storageClassName (e.g. penpot) still bind on k8s-1 hostpath.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-path
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"

@@ -12,3 +12,7 @@ patches:
     target:
       kind: ConfigMap
       name: local-path-config
+  - path: storageclass-patch.yaml
+    target:
+      kind: StorageClass
+      name: local-path

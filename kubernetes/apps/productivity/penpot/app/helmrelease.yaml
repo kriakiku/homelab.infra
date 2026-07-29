@@ -65,6 +65,12 @@ spec:
         defaultReplyTo: penpot@kriakiku.dev
 
       providers:
+        # Chart reads OIDC client id/secret from providers.existingSecret
+        # (not from providers.oidc.existingSecret).
+        existingSecret: penpot-oidc-credentials
+        secretKeys:
+          oidcClientIDKey: client_id
+          oidcClientSecretKey: client_secret
         oidc:
           enabled: true
           # Browser uses the public URL for the authorization redirect.
@@ -77,10 +83,6 @@ spec:
           scopes: openid email profile
           # Empty string disables role checking (all authenticated OIDC users accepted).
           roles: ""
-          existingSecret: penpot-oidc-credentials
-          secretKeys:
-            oidcClientIDKey: client_id
-            oidcClientSecretKey: client_secret
 
     # Disable the chart's Ingress — we manage an HTTPRoute ourselves.
     ingress:

@@ -29,7 +29,7 @@ spec:
               QUI__METRICS_HOST: 0.0.0.0
               QUI__METRICS_PORT: &metricsPort 8080
               QUI__OIDC_ENABLED: true
-              QUI__OIDC_ISSUER: http://pocket-id.identity.svc.cluster.local:1411
+              QUI__OIDC_ISSUER: https://auth.1337.pet
               QUI__OIDC_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
